@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include "header2.html" %}
+</head>
+<body>
+    <div class="logo">
+        <a href="{{ url_for('index') }}"> <img src="{{url_for('static',filename='images/marmutlogo.png')}}" style="width:130px;"></a>
+    </div>
+<nav id="sidebar" class="sidebar nav-collapse collapse">
+    <ul id="side-nav" class="side-nav">
+      <li class="">
+            <a href="{{ url_for('dashboard') }}"><i class="fa fa-home"></i> Dashboard </a>
+        </li>
+       <!---- <li class="">
+            <a href="typography.html"><i class="fa fa-font"></i> Typography</a></li>
+        </li>-->
+        <li class="">
+            <a href="{{ url_for('smartpass') }}"><i class="fa fa-table"></i> Generator</a></li>
+        </li>
+        <li class="">
+            <a href="{{ url_for('wordbank') }}"><i class="fa fa-key"></i> Wordbank</a></li>
+        </li>
+        <li class="active">
+            <a href="{{ url_for('detail') }}"><i class="fa fa-diamond"></i> <span class="name">MyPass Bank </span></a></li>
+        </li>
+        <li class="">
+            <a href="#"><i class="fa fa-superpowers"></i> Collaborate (Next Feature)</a></li>
+        </li>
+        <li class="">
+            <a href="#"><i class="fa fa-microchip"></i> Log (Next Feature)</a></li>
+        </li>
+        </li>
+    </ul>    
+</nav>
+    <div class="wrap">
+        <header class="page-header">
+            <div class="navbar">
+                <ul class="nav navbar-nav navbar-right pull-right">
+                    <li class="">
+                        <a href="{{ url_for('dashboard') }}" title="Account" id="account" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-home"></i>
+                        </a>  
+                    </li>                     
+                     <li class="">
+                        <a href="#" title="Account" id="account" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-user"></i>
+                        </a>  
+                    </li>
+                    <li class=""><a href="{{ url_for('signout') }}" title="Logout" ><i class="glyphicon glyphicon-off"></i></a></li>
+                </ul>
+            </div>
+        </header>       
+ <div class="content container">
+<div class="row">
+    <div class="col-lg-12">
+        <section class="widget">
+            <div class="text-center">
+                <h2>Scan Me</h2>
+              <img src="{{qr}}" width="40%">
+              <p><br/></p>
+              <div class="card">
+                <p class="card keycode justify-content-center m-3 text-center" id='keycode' style="background-color: transparent; border: none;">{{get_key}}</p> 
+              </div>
+            </div>
+        </section>
+    </div>
+</div>
+            <footer class="content-footer">
+              marmut by vinection
+            </footer>
+        </div>
+        <div class="loader-wrap hiding hide">
+            <i class="fa fa-circle-o-notch fa-spin"></i>
+        </div>
+    </div>
+<!-- common libraries. required for every page
+<script src="lib/jquery/dist/jquery.min.js"></script>
+<script src="lib/jquery-pjax/jquery.pjax.js"></script>
+<script src="lib/bootstrap-sass/assets/javascripts/bootstrap.min.js"></script>-->
+
+<!-- common application js 
+<script src="js/app.js"></script>
+<script src="js/settings.js"></script> -->
+
+</body>
+</html>

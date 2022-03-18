@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% include "header3.html" %}
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card border-0 shadow rounded-4 my-5">
+          <div class="card-body p-3 p-sm-5">
+            <h5 class="card-title text-center mb-5 fw-light fs-5 text-dark"> 
+              <a href="{{ url_for('index') }}"> <img src="/static/images/marmutcolor.png" style="max-width:30%"></a> <br/>
+              Welcome back!</h5>
+            {%block content%}
+            <form action="/login" method="POST">
+              <p class="text-danger">{{msg}}</p>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control text-dark" id="username" placeholder="username" name="username" required>
+                <label for="floatingInput" class="text-dark">username</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control text-dark" id="password" placeholder="password" name="password" required>
+                <label for="floatingPassword" class="text-dark">Password</label>
+              </div>
+              <div class="col-md-8 col-xs-8" style="margin-top: 20px; margin-bottom: 20px">
+              {{ recaptcha }}
+              </div>
+
+             
+             <!---- <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" value="" id="rememberPasswordCheck">
+                <label class="form-check-label text-secondary" for="rememberPasswordCheck">
+                  Remember password
+                </label>
+              </div>-->
+              <div class="d-grid">
+                <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit" name="submit">Sign
+                  in</button>
+                <div class="text-center text-dark my-4">
+                new user?<a href="{{ url_for('register') }}" style="color: #214177;text-decoration: none"> register now</a>
+              </div>
+              </div>
+              <!--<hr class="my-4">
+              <div class="d-grid mb-2">
+                <button class="btn btn-google btn-login text-uppercase fw-bold" type="submit">
+                  <i class="fab fa-google me-2"></i> Sign in with Google
+                </button>
+              </div>
+              <div class="d-grid">
+                <button class="btn btn-facebook btn-login text-uppercase fw-bold" type="submit">
+                  <i class="fab fa-facebook-f me-2"></i> Sign in with Facebook
+                </button>
+              </div>-->
+            </form>
+            {%endblock%}
+
+            {% include "footer.html" %}
+        
+        {% include "scripts.html" %}
+    
+    </body>
+</html>

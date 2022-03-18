@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    	{% include "header2.html" %}
+</head>
+<body>
+    <div class="logo">
+        <a href="{{ url_for('index') }}"> <img src="static/images/marmutlogo.png" style="width:130px;"></a>
+    </div>
+<nav id="sidebar" class="sidebar nav-collapse collapse">
+    <ul id="side-nav" class="side-nav">
+      <li class="active">
+            <a href="{{ url_for('dashboard') }}"><i class="fa fa-home"></i> <span class="name">Dashboard</span></a>
+        </li>
+        <li class="">
+            <a href="{{ url_for('smartpass') }}"><i class="fa fa-table"></i> Generator</a></li>
+        </li>
+        <li class="">
+            <a href="{{ url_for('wordbank') }}"><i class="fa fa-key"></i> Wordbank</a></li>
+        </li>
+        <li class="">
+            <a href="{{ url_for('detail') }}"><i class="fa fa-diamond"></i> MyPass Bank</a></li>
+        </li>
+        <li class="">
+            <a href="#"><i class="fa fa-superpowers"></i> Collaborate (next feature)</a></li>
+        </li>
+        <li class="">
+            <a href="#"><i class="fa fa-microchip"></i> Log (next feature)</a></li>
+        </li>
+    </ul> 
+</nav>
+    <div class="wrap">
+        <header class="page-header">
+            <div class="navbar">
+                <ul class="nav navbar-nav navbar-right pull-right">                     
+                    <li class="">
+                        <a href="#" title="Account" id="account" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-user"></i>
+                        </a>  
+                    </li>
+                    <li class=""><a href="{{ url_for('signout') }}" title="Logout"><i class="glyphicon glyphicon-off"></i></a></li>
+                </ul>
+            </div>
+        </header>      
+<div class="content container">
+<div class="row">
+    <div class="col-lg-8">
+        <section class="widget" id="menumobile">
+            <header>
+                <h4>
+                       Menu
+                </h4>
+            </header>
+                <div class="visits-info well well-sm">
+                    <div class="row">
+                        <div class="col-sm-3 col-xs-4">
+                            <div class="value">   <a href="{{ url_for('dashboard') }}"><i class="fa fa-home"></i> <p>Dashboard</p></a> </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-4">
+                            <div class="value"> <a href="{{ url_for('smartpass') }}"><i class="fa fa-table"></i><p> Generator</p></a></li></div>
+                        </div>
+                        <div class="col-sm-3 col-xs-4">
+                            <div class="value"> <a href="{{ url_for('detail') }}"><i class="fa fa-diamond"></i><p>MyPass Bank</p></a></li></div>
+                        </div>
+                        <div class="col-sm-3 col-xs-4">
+                            <div class="value"> <a href="{{ url_for('wordbank') }}"><i class="fa fa-key"></i><p> wordbank</p> </a></li></div>
+                        </div>
+                        <div class="col-sm-3 col-xs-4">
+                            <div class="value"> <a href="#"><i class="fa fa-superpowers"></i><p>Collaborate </p></a></li></div>
+                        </div>
+                        <div class="col-sm-3 col-xs-4">
+                            <div class="value"> <a href="#"> <a href="#"><i class="fa fa-microchip"></i><p> Log </p></a></li></div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+        <section class="widget">
+            <form action="/dashboard" method="post">
+                <header>
+                    <h4 style="margin-bottom: 5%">
+                           Redeem Private Password
+                    </h4>
+                    <div class="col-md-12 mb-4">
+                    <div class="col-md-7">
+                    <div class="d-flex flex-row align-items-center mb-4">
+                        <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                        <div class="form-outline flex-fill mb-0">
+                          <input class="form-control" type="text" id="keycode" placeholder="Private keycode" name="keycode" required>
+                        </div>
+                      </div>
+                      </div>
+                      <div class="col-md-3">
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                        <div class="form-outline flex-fill mb-0">
+                          <input class="form-control" type="text" id="pin" placeholder="pin" name="pin" required>
+                        </div>
+                      </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" name="submit" class="btn btn-success btn-lg" style="margin-top:10%; margin-bottom: 20%;">Reedem</button>
+                        </div>
+                        </div>
+                    </div>
+                </header>
+                <div class="widget-table-overflow" style="overflow-x: auto;">
+                    <table class="table table-striped table-lg mt-sm mb-0 sources-table">
+                        {% for row in Privatekey %}
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Description</th>
+                                <th>password</th>
+                                <th>Keycode</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="label label-success">{{row[0]}}</span></td>
+                                <td><span>{{row[1]}}</span></td>
+                                <td ><span>{{row[2]}}</span></td>
+                                <td><span>{{row[3]}}</span></td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </form>
+            </section>
+        <section class="widget">
+            <header>
+                <h4>
+                    Recent Create Pass
+                </h4>
+                <div class="widget-controls">
+                    <td><a href="{{url_for('detail')}}"><i class="fa fa-eye" aria-hidden="true"></i></a></td>                    
+                </div>
+            </header>
+            
+            <div class="widget-table-overflow">
+                <table class="table table-striped table-lg mt-sm mb-0 sources-table">
+                    <thead>
+                        <tr>
+                            <th>Source</th>
+                            <th>Description</th>
+                            <th class="hidden-xs">Access</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    {% for row in showbank %}
+                    <tbody>
+                        <tr>
+                            <td><span class="label label-success">{{row[2]}}</span></td>
+                            <td><span>{{row[3]}}</span></td>
+                            <td class="hidden-xs"><span>{{row[6]}}</span></td>
+                            <td ><span>{{row[8]}}</span></td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        </section>
+    </div>
+    <div class="col-lg-4">
+        <section class="widget">
+            <header>
+                <h4>
+                    Whitepaper
+                </h4>
+             </header>
+            <div class="body">
+            <div class="m-4">
+                <img src="static/images/passAttack.jpg" width="100%">
+            </div>
+            </div>
+        </section> 
+        <section class="widget">
+            <header>
+                <h4>
+                    How to use
+                </h4>
+             </header>
+            <div class="body">
+            <div class="m-4">
+                <img src="static/images/alur.jpg" width="100%">
+            </div>
+            </div>
+        </section>       
+    </div>
+</div>
+            <footer class="content-footer">
+              marmut by vinection
+            </footer>
+        </div>
+        <div class="loader-wrap hiding hide">
+            <i class="fa fa-circle-o-notch fa-spin"></i>
+        </div>
+    </div>
+
+</body>
+</html>

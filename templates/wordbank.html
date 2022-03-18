@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% include "header.html" %}
+</head>
+<body>
+    <section>
+    <div class="d-flex justify-content-center">
+        <h1 class="text-light"><strong>WordBank</strong></h1><br/>
+    </div>
+    <div class="d-flex justify-content-center">
+        <h3 class="text-light"> Redeem Your Password</h3>
+    </div>
+    </section>
+    <section>
+    <!--cari & copy-->
+        <div class="container" id="content">
+            <div class="row justify-content-center">
+                <div class="col-md-5  col-sm-12  col-xs-12">
+                    <div class="card" id="cardcari9">
+                    <div class="row" id="cari">
+                        <div class="col-md-12 col-sm-12 col-xs-12 p-1">
+                            <form action="/wordbank" method=post>
+                            <input class="p-1 f-5" style="border:none; width: 100%; font-size: 15px;" type="text" placeholder="Your Keycode" id="search" name="search">
+                        
+                        </div>
+                    </div>
+                    </div> 
+                    {% for row in datahash %}
+                    <div class="card col-md-5 col-sm-12  col-xs-12 justify-content-center mt-3 text-center" style="background: transparent; width: 100%; border: none;">  
+                        {{msg}}
+                        <p><strong>Source/ssid:</strong></p> <small>{{row[2]}} </small>
+                    </div>  
+                    <div class="card col-md-5 col-sm-12 col-xs-12 justify-content-center mt-3 text-center" style="background: transparent; width: 100%; border: none;">  
+                        <p><strong>Password:</strong></p> <h4>{{row[1]}} </h4>
+                    </div>
+               
+                    {% endfor%}
+                    {% for row in datahash2 %}
+                    <div class="card col-md-5 col-sm-12 col-xs-12 justify-content-center text-center mt-3" style="background: transparent; width: 100%; border: none;">  
+                        {{msg}}
+                        <p><strong>Source/SSID</strong></p> <small>{{row[0]}} </small>
+                    </div>
+            
+                    <div class="card col-md-5 col-sm-12  col-xs-12 justify-content-center text-center mt-4" style="background: transparent; width: 100%; border: none;">  
+                        <p><strong>Password:</strong></p> <h4>{{row[1]}} </h4>
+                    </div>
+                    {% endfor%}
+                   
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 justify-content-center"> 
+                    <div class="actions"><button type="submit" class="btn mb-3" id="tombol" value="search" name="search">GetPass</button></div>
+                    <!--<button type="button" class="btn" id="tombol">SAVE WordBank</button>-->
+                </form>
+                </div>
+                </div>
+                
+            </div>
+        </div>
+      <!--Akhir cari & copy-->
+      
+
+    </section>
+
+
+    {% include "footer.html" %}
+</div>	
+
+{% include "scripts.html" %}
+</body>
+</html>

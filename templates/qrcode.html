@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% include "header3.html" %}
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/3.3.3/adapter.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+ <h4> Qr Code</h4>    
+ <video id="preview" width="100%"></video> 
+ <div class="col-md-6">
+ <label>QR value</label>   
+ <input type="text" name="text" id="text" readonly="" class="form-control">
+</div>
+                
+
+<script type="text/javascript">
+    let scanner = new Instascan.Scanner({video:document.getElementById('preview')});
+    Instascan.Camera.getCameras().then(function(cameras){
+        if (cameras.length > 0) {
+            scanner.start(cameras[0]);
+        }else {
+            alert('no cameras found')
+        }
+    }).catch(function(e){
+        console.error(e);
+    });
+
+    scanner.addListener('scan',function(c){
+        document.getElementById('text').value=c;
+    });
+
+</script>
+
+
+
+{% include "footer.html" %}	
+
+{% include "scripts.html" %}
+</body>
+</html>

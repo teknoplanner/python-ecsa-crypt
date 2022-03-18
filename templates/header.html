@@ -1,0 +1,25 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marmut</title>
+
+<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='style/style.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='style/responsive.css') }}" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300&display=swap" rel="stylesheet">
+<link rel="shortcut icon" href="{{url_for('static',filename='images/marmutcolor.png')}}">
+
+
+<nav class="navbar justify-content-end">
+  <ul class="nav justify-content-end">  
+    <li class="nav-item">
+      <a class="nav-link" href="/smartpass">Generator</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/wordbank">Wordbank</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/login">MyPass Bank</a>
+    </li>
+  </ul>
+</nav>
