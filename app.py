@@ -27,14 +27,14 @@ app.config['MYSQL_DATABASE_PASSWORD'] = ''
 app.config['MYSQL_DATABASE_DB'] = 'worbank'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 # site key - Google ReChapta
-app.config['RECAPTCHA_SITE_KEY'] = '6Ldn2RgdAAAAAAmePY_Yb-cGasVVAOP2lHtdMiEZ'
+app.config['RECAPTCHA_SITE_KEY'] = '6Ldn2RgdAAAAAAmePY_Yb-cGasVVAOP2lHtdMiEZ543543543Secret'
 # secret key -  Google ReChapta
-app.config['RECAPTCHA_SECRET_KEY'] = '6Ldn2RgdAAAAACw8L3Uj58IDA6ECFrA5yppSrVoj'
+app.config['RECAPTCHA_SECRET_KEY'] = '6Ldn2RgdAAAAACw8L3Uj58IDA6ECFrA5yppSrVojdsdsdssecret'
 mysql.init_app(app)
 recaptcha = ReCaptcha(app)
-app.config['MAIL_SERVER'] = 'mail.vinection.com'
+app.config['MAIL_SERVER'] = 'mail.yourmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'marmut@vinection.com'
+app.config['MAIL_USERNAME'] = 'your mail.com'
 app.config['MAIL_PASSWORD'] = 'Goonline08!'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
