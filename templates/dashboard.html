@@ -12,7 +12,8 @@
         <div class="h-20 lg:h-20 w-full flex flex-wrap">
             {% include "navbardash.html" %}
         </div>
-
+        <div>
+        </div>
         <!--Dash Content -->
         <div id="dash-content"
             class="py-6 lg:py-0 w-full lg:max-w-sm flex flex-wrap content-start bg-gray-100 dark:text-gray-200 dark:bg-gray-900">
@@ -166,34 +167,61 @@
                     <div class="max-w-sm lg:max-w-3xl xl:max-w-5xl">
 
                         <!--Graph Card-->
-                        <div class="overflow-x-auto">
+                        <div class="">
                             <table class="table w-full">
                                 <!-- head -->
                                 <thead>
                                     <tr>
-                                        <th class="text-3xl bg-base-100 dark:text-gray-200 dark:bg-gray-600">Collection
+                                        <th class="text-3xl bg-base-100 dark:text-gray-200 dark:bg-gray-600">
+                                            Collection
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <!-- row 1 -->
                                     <tr>
-                                        <td class="bg-base-100 dark:text-gray-200 dark:bg-gray-600">Cy Ganderton</td>
+                                        <td class="bg-base-100 dark:text-gray-200 dark:bg-gray-600">Cy Ganderton
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td class="bg-base-100 dark:text-gray-200 dark:bg-gray-600">Cy Ganderton</td>
+                                        <td class="bg-base-100 dark:text-gray-200 dark:bg-gray-600">Cy Ganderton
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+                        <table class="table w-full">
+                            <!-- head -->
+                            <thead>
+                                <tr>
+                                    <th class="text-3xl bg-base-100 dark:text-gray-200 dark:bg-gray-600">
+                                        Collection
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- row 1 -->
+                                <tr>
 
+                                    <td class="bg-base-100 dark:text-gray-200 dark:bg-gray-600"> <a
+                                            href="{{ url_for('detail') }}">Cy Ganderton</a>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td class="bg-base-100 dark:text-gray-200 dark:bg-gray-600">Cy Ganderton
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-
                 </div>
 
             </div>
 
         </div>
+
+    </div>
     </div>
     <section class="mb-20">
 
@@ -202,10 +230,6 @@
 
 
 </html>
-
-
-
-
 
 
 

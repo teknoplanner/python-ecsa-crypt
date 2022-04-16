@@ -1,5 +1,6 @@
+from ctypes import alignment
 from os import abort
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from wordbank import acak, getresult, angka, simbol, alphabet
 import secrets
 import random
@@ -233,17 +234,40 @@ def dashboard():
         cursor.execute(
             'SELECT * FROM newitem WHERE usercode = %s ORDER BY created_time DESC LIMIT 10', (hashcode))
         showbank = cursor.fetchall()
-        if request.method == 'POST' and 'keycode' in request.form and 'pin' in request.form:
-            getpin = request.form['pin']
+        if request.method == 'POST' and 'keycode' in request.form:
+            akses = 'public'
             getkey = request.form['keycode']
             cursor = mysql.connect().cursor()
             cursor.execute(
-                'SELECT source, deskripsi, password,  keycode FROM newitem WHERE keycode=%s AND Private_key= %s', (getkey, getpin))
-            privateAccess = cursor.fetchall()
+                'SELECT source, deskripsi, password,  keycode FROM newitem WHERE keycode=%s AND Access=%s', (getkey, akses))
+            RedeemAccess = cursor.fetchall()
             cursor.close()
-            return render_template("dashboard.html", showbank=showbank, Privatekey=privateAccess, name=session["username"])
+            return render_template("dashboard.html", showbank=showbank, RedeemAccess=RedeemAccess, name=session["username"])
         else:
             return render_template("dashboard.html", showbank=showbank)
+
+
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    else:
+        hashcode = session["hashcode"]
+        cursor = mysql.connect().cursor()
+        cursor.execute(
+            'SELECT * FROM newitem WHERE usercode = %s ORDER BY created_time DESC LIMIT 10', (hashcode))
+        showbank = cursor.fetchall()
+        if request.method == 'POST' and 'keycode' in request.form:
+            akses = 'public'
+            getkey = request.form['keycode']
+            cursor = mysql.connect().cursor()
+            cursor.execute(
+                'SELECT source, deskripsi, password,  keycode FROM newitem WHERE keycode=%s AND Access=%s', (getkey, akses))
+            RedeemAccess = cursor.fetchall()
+            cursor.close()
+            return render_template("profile.html", showbank=showbank, RedeemAccess=RedeemAccess, name=session["username"])
+        else:
+            return render_template("profile.html", showbank=showbank)
 
 
 @app.route("/additem", methods=['GET', 'POST'])
@@ -298,7 +322,8 @@ def detail():
             cursor.execute(
                 'SELECT * FROM newitem where usercode=%s ORDER BY created_time DESC limit %s offset %s',  (hashcode, limit, offset))
             showbank = cursor.fetchall()
-            pagination = Pagination(page=page, per_page=limit, total=total)
+            pagination = Pagination(
+                page=page, per_page=limit, total=total)
             cursor.close()
             return render_template("detail.html", data=showbank, pagination=pagination, next=next, prev=prev, name=session["username"])
 

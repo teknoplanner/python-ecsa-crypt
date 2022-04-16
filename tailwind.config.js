@@ -14,7 +14,3 @@ module.exports = {
   plugins: [require("daisyui")],
 }
 
-function toggleDarkMode() {
-  var element = document.getElementById("parent");
-  element.classList.toggle("dark");
-}
