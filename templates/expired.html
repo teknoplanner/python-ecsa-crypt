@@ -1,14 +1,46 @@
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Marmut</title>
+<!doctype html>
+<html>
 
-<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='style/404.css') }}" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<head>
+  {% include "header.html" %}
+</head>
 
-  <div class="signwood"></div>
-  <div class="judul text-light"><h1>The Token is Expired</h1></div>
-  <div class="signtext">
-    <p>try login <br/> Click <a href="{{ url_for('login') }}">here</a></p>
-  </div>
-  
+
+<body>
+  <section>
+    <div class="bg-white min-h-screen items-center justify-center mt-20 xl:m-40">
+      <div class="relative w-full">
+        <div
+          class="absolute top-50-10 -right-0 w-80 h-72 bg-indigo-300 rounded-xl mix-blend-multiply filter blur-xl opacity-70 animate-blob">
+        </div>
+        <div
+          class="absolute top-50 -right-0 w-15 h-72 bg-yellow-300 mix-blend-multiply filter blur-xl opacity-70 animate-blob">
+        </div>
+        <div
+          class="absolute top-20 -left-4 w-20 h-20 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000">
+        </div>
+        <div
+          class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000">
+        </div>
+        <div class="h-full">
+          <div class="card w-full bg-base-100 shadow-xl p-5 items-center">
+            <div class="card-body">
+              <h1 class="text-4xl lg:text-5xl"> Sorry, Your Token Is Expired</h1>
+            </div>
+            <div class="mt-5">
+              <a href="{{ url_for('token') }}">
+                <button class="w-full p-3 mt-4 bg-indigo-600 text-white rounded shadow">Re-generate</button></a>
+            </div>
+          </div>
+        </div>
+        <!--Main-->
+
+      </div>
+    </div>
+    </div>
+    </div>
+    </div>
+  </section>
+</body>
+
+</html>

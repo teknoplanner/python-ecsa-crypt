@@ -1,63 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+
 <head>
-	{% include "header3.html" %}
+  {% include "header.html" %}
 </head>
+
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-        <div class="card border-0 shadow rounded-4 my-5">
-          <div class="card-body p-3 p-sm-5">
-            <h5 class="card-title text-center mb-5 fw-light fs-5 text-dark"> 
-              <a href="{{ url_for('index') }}"> <img src="/static/images/marmutcolor.png" style="max-width:30%"></a> <br/>
-              Welcome back!</h5>
-            {%block content%}
-            <form action="/login" method="POST">
-              <p class="text-danger">{{msg}}</p>
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control text-dark" id="username" placeholder="username" name="username" required>
-                <label for="floatingInput" class="text-dark">username</label>
+  <section>
+    <div class="bg-white min-h-screen flex items-center justify-center">
+      <div class="relative w-full">
+        <div
+          class="absolute top-50-10 -right-0 w-80 h-72 bg-indigo-300 rounded-xl mix-blend-multiply filter blur-xl opacity-70 animate-blob">
+        </div>
+        <div
+          class="absolute top-50 -right-0 w-15 h-72 bg-yellow-300 mix-blend-multiply filter blur-xl opacity-70 animate-blob">
+        </div>
+        <div
+          class="absolute top-20 -left-4 w-20 h-20 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000">
+        </div>
+        <div
+          class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000">
+        </div>
+        <!--Main-->
+        <div class=" relative container mx-auto p-8 flex mb-5">
+          <div class="max-w-md w-full mx-auto">
+            <h1 class="text-4xl text-center mb-12 font-thin">Get Started</h1>
+            <div class="bg-white rounded-lg overflow-hidden shadow-2xl">
+              <div class="p-8">
+                {%block content%}
+                <form method="POST" action="/login">
+                  <div class="bg-warning shadow-lg rounded mb-2 pl-2 pr-2 font-3xl"><span
+                      class="font-3xl text-slate-300 italic leading-loose">{{msg}}
+                    </span></div>
+                  <div class=" mb-5">
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-600">Username</label>
+                    <input type="text" name="username"
+                      class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none"
+                      required>
+                  </div>
+                  <div class="mb-5">
+                    <label for="password" class="block mb-2 text-sm font-medium text-gray-600">Password</label>
+                    <input type="password" name="password"
+                      class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none"
+                      required>
+                  </div>
+                  <div class="mb-5">
+                    {{ recaptcha }}
+                  </div>
+                  <button class="w-full p-3 mt-4 bg-indigo-600 text-white rounded shadow" type="submit">Login</button>
+                </form>
+                {%endblock%}
               </div>
-              <div class="form-floating mb-3">
-                <input type="password" class="form-control text-dark" id="password" placeholder="password" name="password" required>
-                <label for="floatingPassword" class="text-dark">Password</label>
+              <div class="flex justify-between p-8 text-sm border-t border-gray-300 bg-gray-100">
+                <a href="{{ url_for('register') }}" class="font-medium text-indigo-500">Create account</a>
+                <a href="#" class="text-gray-600">Forgot password?</a>
               </div>
-              <div class="col-md-8 col-xs-8" style="margin-top: 20px; margin-bottom: 20px">
-              {{ recaptcha }}
-              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
 
-             
-             <!---- <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" value="" id="rememberPasswordCheck">
-                <label class="form-check-label text-secondary" for="rememberPasswordCheck">
-                  Remember password
-                </label>
-              </div>-->
-              <div class="d-grid">
-                <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit" name="submit">Sign
-                  in</button>
-                <div class="text-center text-dark my-4">
-                new user?<a href="{{ url_for('register') }}" style="color: #214177;text-decoration: none"> register now</a>
-              </div>
-              </div>
-              <!--<hr class="my-4">
-              <div class="d-grid mb-2">
-                <button class="btn btn-google btn-login text-uppercase fw-bold" type="submit">
-                  <i class="fab fa-google me-2"></i> Sign in with Google
-                </button>
-              </div>
-              <div class="d-grid">
-                <button class="btn btn-facebook btn-login text-uppercase fw-bold" type="submit">
-                  <i class="fab fa-facebook-f me-2"></i> Sign in with Facebook
-                </button>
-              </div>-->
-            </form>
-            {%endblock%}
-
-            {% include "footer.html" %}
-        
-        {% include "scripts.html" %}
-    
-    </body>
 </html>

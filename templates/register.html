@@ -1,90 +1,85 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+
 <head>
-	{% include "header3.html" %}
+  {% include "header.html" %}
 </head>
+
 <body>
-<section class="vh-100" style="background-color: transparent;">
-  <div class="container h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-lg-12 col-xl-11">
-        <div class="card text-" style="border-radius: 25px; background: transparent; border:none">
-          <div class="card-body p-md-5">
-            <div class="row justify-content-center">
-              <div class="col-md-8 col-lg-6 col-xl-5 order-2 order-lg-1">
-
-                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
-         {%block content%}
-         <div class="text-warning m-3">
-          {{msg}}
-          </div>
-                <form action="/register" method="post">
-
-                  <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-                    <div class="form-outline flex-fill mb-0">
-                      <input class="form-control" type="text" id="username" placeholder="jhonlegend" name="username" required>
-                      <label class="form-label">Username</label>
+  <section>
+    <div class="bg-white min-h-screen flex items-center justify-center">
+      <div class="relative w-full">
+        <div
+          class="absolute top-50-10 -right-0 w-80 h-72 bg-indigo-300 rounded-xl mix-blend-multiply filter blur-xl opacity-70 animate-blob">
+        </div>
+        <div
+          class="absolute top-50 -right-0 w-15 h-72 bg-yellow-300 mix-blend-multiply filter blur-xl opacity-70 animate-blob">
+        </div>
+        <div
+          class="absolute top-20 -left-4 w-20 h-20 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000">
+        </div>
+        <div
+          class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000">
+        </div>
+        <!--Main-->
+        <div class="hero min-h-screen">
+          <div class="hero-content flex-col lg:flex-row">
+            <ul class="steps steps-horizontal">
+              <li class="step step-primary">Register</li>
+              <li class="step">Activation</li>
+              <li class="step">Configuration</li>
+              <li class="step">Share</li>
+            </ul>
+            <div>
+              <div class="relative container mx-auto p-8 flex mb-5">
+                <div class="max-w-md w-full mx-auto">
+                  <h1 class="text-4xl text-center mb-12 font-thin">Create your Account</h1>
+                  <div class="bg-white rounded-lg overflow-hidden shadow-2xl">
+                    <div class="p-8">
+                      {%block content%}
+                      <form method="POST" action="/register">
+                        <div class="bg-warning shadow-lg rounded mb-2 pl-2 pr-2 font-3xl"><span
+                            class="font-3xl text-slate-300 italic leading-loose">{{msg}}
+                          </span></div>
+                        <div class=" mb-5">
+                          <label for="username" class="block mb-2 text-sm font-medium text-gray-600">Username</label>
+                          <input type="text" name="username" id="username"
+                            class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none"
+                            required>
+                        </div>
+                        <div class=" mb-5">
+                          <label for="email" class="block mb-2 text-sm font-medium text-gray-600" required>Email</label>
+                          <input type="text" name="email" id="email"
+                            class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none"
+                            required>
+                        </div>
+                        <div class="mb-5">
+                          <label for="password" class="block mb-2 text-sm font-medium text-gray-600">Password</label>
+                          <input type="password" name="password" id="password"
+                            class="form-control block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none"
+                            required>
+                        </div>
+                        <div class="mb-5">
+                          {{ recaptcha }}
+                        </div>
+                        <button class="w-full p-3 mt-4 bg-indigo-600 text-white rounded shadow"
+                          type="submit">Register</button>
+                      </form>
+                      {%endblock%}
+                    </div>
+                    <div class="flex justify-between p-8 text-sm border-t border-gray-300 bg-gray-100">
+                      <a href="{{ url_for('login') }}" class="font-medium text-indigo-500">login</a>
+                      <a href="#" class="text-gray-600">Forgot password?</a>
                     </div>
                   </div>
-
-                  <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                    <div class="form-outline flex-fill mb-0">
-                      <input class="form-control" type="text" id="email" name="email" placeholder="jhonlegend@gmail.com" required>
-                      <label class="form-label">Your Email</label>
-                    </div>
-                  </div>
-
-                  <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
-                    <div class="form-outline flex-fill mb-0">
-                      <input  class="form-control" type="password" id="password" name="password" placeholder="K1ngC00l!" required>
-                      <label class="form-label">Password</label>
-                    </div>
-                  </div>
-                  <div class="m-3">
-                  {{ recaptcha }}
                 </div>
-
-                  <!--<div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                    <div class="form-outline flex-fill mb-0">
-                      <input type="password" id="form3Example4cd" class="form-control" />
-                      <label class="form-label" for="form3Example4cd">Repeat your password</label>
-                    </div>
-                  </div>
-
-                  <div class="form-check d-flex justify-content-center mb-5">
-                    <input
-                      class="form-check-input me-2"
-                      type="checkbox"
-                      value=""
-                      id="form2Example3c"
-                    />
-                    <label class="form-check-label" for="form2Example3">
-                      I agree all statements in <a href="#!">Terms of service</a>
-                    </label>
-                  </div>-->
-                <div class="d-flex justify-content-center mx-4 mb- mb-lg-4">
-                    <button type="submit" name="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top:10%;">Register</button>
-                </div>
-                <div class="d-flex justify-content-center mx-4 mb- mb-lg-4 mt-4">
-                   <small> You have Account? &nbsp; <a href="{{ url_for('login') }}" >Signin</a></small>
-                </div>        
-                {%endblock%}
-                </form>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-{% include "footer.html" %}	
-
-{% include "scripts.html" %}
+  </section>
 </body>
+
 </html>

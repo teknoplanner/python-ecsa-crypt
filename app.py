@@ -1,5 +1,5 @@
 from os import abort
-from flask import Flask, render_template, request, redirect, url_for, session, Response
+from flask import Flask, render_template, request, redirect, url_for
 from wordbank import acak, getresult, angka, simbol, alphabet
 import secrets
 import random
@@ -16,6 +16,7 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask_paranoid import Paranoid
 from flask_paginate import Pagination, get_page_parameter
 from flask_qrcode import QRcode
+from pymysql import cursors
 
 app = Flask(__name__)
 app.secret_key = "BisMilaahHanya4allAhY4n6TauAamiin!#"
@@ -24,18 +25,18 @@ mail = Mail(app)
 QRcode(app)
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = 'worbank'
+app.config['MYSQL_DATABASE_DB'] = 'ecsa'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 # site key - Google ReChapta
-app.config['RECAPTCHA_SITE_KEY'] = '6Ldn2RgdAAAAAAmePY_Yb-cGasVVAOP2lHtdMiEZ543543543Secret'
+app.config['RECAPTCHA_SITE_KEY'] = '6LeUK3cfAAAAAIpGwG2Wf0LZreY7-QbNgbhOonPe'
 # secret key -  Google ReChapta
-app.config['RECAPTCHA_SECRET_KEY'] = '6Ldn2RgdAAAAACw8L3Uj58IDA6ECFrA5yppSrVojdsdsdssecret'
+app.config['RECAPTCHA_SECRET_KEY'] = '6LeUK3cfAAAAACGn_UdvErhV82b8QO2IwMmN4yVh'
 mysql.init_app(app)
 recaptcha = ReCaptcha(app)
-app.config['MAIL_SERVER'] = 'mail.yourmail.com'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'your mail.com'
-app.config['MAIL_PASSWORD'] = 'Goonline08!'
+app.config['MAIL_USERNAME'] = 'ecsaproject@gmail.com'
+app.config['MAIL_PASSWORD'] = 'hryriwvwmkopeqkc'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['CRSF_ENABLE'] = True
@@ -50,7 +51,7 @@ s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 @app.before_request
 def make_session_permanent():
     session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=5)
+    app.permanent_session_lifetime = timedelta(minutes=60)
 
 
 @app.errorhandler(404)
@@ -58,14 +59,14 @@ def not_found(e):
     return render_template("404.html"), 404
 
 
-@app.errorhandler(500)
-def internal_error(e):
-    return render_template('500.html'), 500
+# @app.errorhandler(500)
+# def internal_error(e):
+#     return render_template('500.html'), 500
 
 
-@paranoid.on_invalid_session
-def invalid_session():
-    render_template('401.html'), 401
+# @paranoid.on_invalid_session
+# def invalid_session():
+#     render_template('401.html'), 401
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -120,10 +121,10 @@ def login():
                     conn.commit()
                     msg = "Your Account not Active, Please Check inbox/spam email for Activation"
             else:
-                msg = 'Incorrect username/password!'
+                msg = ' Incorrect username/password! '
                 return render_template('login.html', msg=msg)
         else:
-            msg = 'Incorrect username/password!'
+            msg = ' Incorrect username/password! '
             return render_template('login.html', msg=msg)
         conn.close()
         return render_template('login.html', msg=msg)
@@ -245,7 +246,7 @@ def dashboard():
             return render_template("dashboard.html", showbank=showbank)
 
 
-@ app.route("/additem", methods=['GET', 'POST'])
+@app.route("/additem", methods=['GET', 'POST'])
 def additem():
     msg = ''
     if "username" not in session:
@@ -274,7 +275,7 @@ def additem():
     return render_template('additem.html', msg=msg)
 
 
-@ app.route('/detail', methods=['GET', 'POST'])
+@app.route('/detail', methods=['GET', 'POST'])
 def detail():
     if "username" not in session:
         return redirect(url_for("login"))
@@ -302,7 +303,7 @@ def detail():
             return render_template("detail.html", data=showbank, pagination=pagination, next=next, prev=prev, name=session["username"])
 
 
-@ app.route("/detail/<int:id>/delete", methods=['GET', 'POST'])
+@app.route("/detail/<int:id>/delete", methods=['GET', 'POST'])
 def delete(id):
     if "username" not in session:
         return redirect(url_for("login"))
@@ -321,7 +322,7 @@ def delete(id):
         abort(404)
 
 
-@ app.route("/detail/<int:id>/edit", methods=['GET', 'POST'])
+@app.route("/detail/<int:id>/edit", methods=['GET', 'POST'])
 def edit(id):
     if "username" not in session:
         return redirect(url_for("login"))
@@ -380,7 +381,7 @@ def edit(id):
             return render_template('edit.html', get_id=get_id, msg=msg)
 
 
-@ app.route("/detail/<int:id>/QRcode", methods=['GET', 'POST'])
+@app.route("/detail/<int:id>/QRcode", methods=['GET', 'POST'])
 def Qrcode(id):
     if "username" not in session:
         return redirect(url_for("login"))
@@ -394,7 +395,7 @@ def Qrcode(id):
                 'SELECT keycode FROM newitem WHERE id = %s', (id))
             uniq = cursor.fetchone()
             get_key = uniq.get("keycode")
-            fixed = 'http://192.168.2.8/'
+            fixed = 'http://192.168.2.7/'
             aksesKey = fixed + get_key
             get_qr = str(aksesKey)
             qr_generator = QRcode.qrcode(
@@ -402,7 +403,7 @@ def Qrcode(id):
             return render_template('detailsource.html', qr=qr_generator, get_key=aksesKey)
 
 
-@ app.route("/show", methods=['GET', 'POST'])
+@app.route("/show", methods=['GET', 'POST'])
 def show():
     if "username" and "uniqcode" not in session:
         return redirect(url_for("login"))
@@ -432,7 +433,7 @@ def show():
     return render_template('show.html', msg=msg)
 
 
-@ app.route("/addRequired", methods=['GET', 'POST'])
+@app.route("/addRequired", methods=['GET', 'POST'])
 def addRequired():
     if "username" not in session:
         return redirect(url_for("login"))
@@ -470,7 +471,7 @@ def addRequired():
     return render_template('showadd.html', msg=msg)
 
 
-@ app.route("/showmypin", methods=['GET', 'POST'])
+@app.route("/showmypin", methods=['GET', 'POST'])
 def showmypin():
     if "username" not in session:
         return redirect(url_for("login"))
@@ -513,7 +514,7 @@ def showmypin():
     return render_template('mypin.html', msg=msg)
 
 
-@ app.route("/wordbank", methods=['GET', 'POST'])
+@app.route("/wordbank", methods=['GET', 'POST'])
 def wordbank():
     msg = ''
     if request.method == 'POST' and 'search' in request.form:
@@ -534,7 +535,7 @@ def wordbank():
     return render_template('wordbank.html', msg=msg)
 
 
-@ app.route("/register", methods=['GET', 'POST'])
+@app.route("/register", methods=['GET', 'POST'])
 def register():
     msg = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
@@ -588,8 +589,7 @@ def register():
                 cursor.close()
             else:
                 msg = 'Invalid ReCaptcha'
-    elif request.method == 'POST':
-        msg = 'Please Form is Required!'
+
     return render_template('register.html', msg=msg)
 
 
@@ -610,6 +610,77 @@ def confirm_email(token):
     return render_template('activation.html')
 
 
+@app.route('/tokenactivation',  methods=['GET', 'POST'])
+def token():
+    msg = ''
+    if request.method == 'POST' and 'email' in request.form:
+        email = request.form['email']
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute('SELECT email FROM users WHERE email = %s', (email, ))
+        account = cursor.fetchone()
+        if account and recaptcha.verify():
+            get_email = email.split()
+            token = s.dumps(email, salt="Abagaboga")
+            msg = Message('Activation account', sender='ecsaproject@gmail.com',
+                          recipients=get_email)
+            link = url_for('confirm_email', token=token, _external=True)
+            msg.body = "Please No Reply"
+            msg.body = "click link for activation:{}".format(link)
+            mail.send(msg)
+            connection = mysql.get_db()
+            cursor = connection.cursor()
+            cursor.execute('UPDATE users SET activation = %s WHERE email=%s',
+                           (token, email))
+            connection.commit()
+            msg = 'Activation code has been sent to your email, check inbox/spam'
+            connection.close()
+            cursor.close()
+        else:
+            msg = 'Email Not found'
+    return render_template('token.html', msg=msg)
+
+
+@app.route('/forgetpass',  methods=['GET', 'POST'])
+def forgetpass():
+    msg = ''
+    if request.method == 'POST' and 'email' in request.form:
+        email = request.form['email']
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute('SELECT email FROM users WHERE email = %s', (email, ))
+        account = cursor.fetchone()
+        if account and recaptcha.verify():
+            get_email = email.split()
+            token = s.dumps(email, salt="Abagabogapasde")
+            msg = Message('Restore Account', sender='ecsaproject@gmail.com',
+                          recipients=get_email)
+            link = url_for('restoreAccount', token=token, _external=True)
+            msg.body = "Please No Reply"
+            msg.body = "click link for restore password:{}".format(link)
+            mail.send(msg)
+            connection = mysql.get_db()
+            cursor = connection.cursor()
+            cursor.execute('UPDATE users SET restoreToken = %s WHERE email=%s',
+                           (token, email))
+            connection.commit()
+            msg = "Account recovery has been sent to email"
+            connection.close()
+            cursor.close()
+        else:
+            msg = 'Email Not found'
+    return render_template('forgetpass.html', msg=msg)
+
+
+@app.route('/restoreaccount/<token>')
+def restoreAccount(token):
+    try:
+        email = s.loads(token, salt='Abagabogapasde', max_age=360)
+    except SignatureExpired:
+        return render_template('expiredpass.html')
+    return render_template('recoverypass.html')
+
+
 @ app.route('/<uniqcode>')
 def uniqcode(uniqcode):
     conn = mysql.connect()
@@ -627,4 +698,4 @@ def uniqcode(uniqcode):
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(host="0.0.0.0", port=80)
+    app.run(host='192.168.2.10', port=80)
