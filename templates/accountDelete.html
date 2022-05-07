@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+
+<head>
+    {% include "header.html" %}
+</head>
+
+
+<body>
+    <section>
+        <div class="bg-white min-h-screen items-center justify-center mt-20 xl:m-40">
+            <div class="relative w-full">
+                <div
+                    class="absolute top-50-10 -right-0 w-80 h-72 bg-indigo-300 rounded-xl mix-blend-multiply filter blur-xl opacity-70 animate-blob">
+                </div>
+                <div
+                    class="absolute top-50 -right-0 w-15 h-72 bg-yellow-300 mix-blend-multiply filter blur-xl opacity-70 animate-blob">
+                </div>
+                <div
+                    class="absolute top-20 -left-4 w-20 h-20 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000">
+                </div>
+                <div
+                    class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000">
+                </div>
+                <div class="h-full">
+                    <div class="card w-full bg-base-100 shadow-xl p-5 items-center">
+                        <div class="card-body">
+                            <h1 class="text-4xl lg:text-5xl"> Delete Account Permanently?</h1>
+                            <span> *all your assets will be erased</span>
+                        </div>
+                        <div class="bg-white rounded-lg overflow-hidden shadow-2xl">
+                            <div class="p-8">
+                                {%block content%}
+                                <form method="POST" action="/accountDelete">
+                                    <div class="bg-warning shadow-lg rounded mb-2 pl-2 pr-2 font-3xl">
+                                        <div class=" mb-5">
+                                            <label for="email"
+                                                class="block mb-2 text-sm font-medium text-gray-600">Confirm
+                                                Email</label>
+                                            <input type="text" name="email"
+                                                class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none"
+                                                required>
+                                        </div>
+                                        <div class=" mb-5">
+                                            <label for="username"
+                                                class="block mb-2 text-sm font-medium text-gray-600">Confirm
+                                                username</label>
+                                            <input type="text" name="username"
+                                                class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none"
+                                                required>
+                                        </div>
+                                        <div class=" mb-5">
+                                            <label for="password"
+                                                class="block mb-2 text-sm font-medium text-gray-600">Confirm
+                                                password</label>
+                                            <input type="password" name="password"
+                                                class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none"
+                                                required>
+                                        </div>
+                                        <div class="mb-5">
+                                            {{ recaptcha }}
+                                        </div>
+                                        <button class="w-full p-3 mt-4 bg-indigo-600 text-white rounded shadow"
+                                            type="submit">Delete Account</button>
+                                </form>
+                                {%endblock%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Main-->
+
+            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+    </section>
+</body>
+
+</html>

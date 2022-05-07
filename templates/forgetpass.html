@@ -6,67 +6,66 @@
 </head>
 
 <body>
-    <section>
-        <div class="bg-white min-h-screen flex items-center justify-center">
-            <div class="relative w-full">
-                <div
-                    class="absolute top-50-10 -right-0 w-80 h-72 bg-indigo-300 rounded-xl mix-blend-multiply filter blur-xl opacity-70 animate-blob">
-                </div>
-                <div
-                    class="absolute top-50 -right-0 w-15 h-72 bg-yellow-300 mix-blend-multiply filter blur-xl opacity-70 animate-blob">
-                </div>
-                <div
-                    class="absolute top-20 -left-4 w-20 h-20 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000">
-                </div>
-                <div
-                    class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000">
-                </div>
-                <!--Main-->
-                <div class="hero min-h-screen">
-                    <div class="hero-content flex-col lg:flex-row">
-                        <div class=" relative container mx-auto p-8 flex">
-                            <div class="max-w-md w-full mx-auto">
-                                <h1 class="text-4xl text-center mb-12 font-thin">Forget Password</h1>
-                                <div class="bg-white rounded-lg overflow-hidden shadow-2xl">
-                                    <div class="p-8">
-                                        {%block content%}
-                                        <form method="POST" action="/forgetpass">
-                                            <div class="bg-warning shadow-lg rounded mb-2 pl-2 pr-2 font-3xl"><span
-                                                    class="font-3xl text-slate-300 italic leading-loose">{{msg}}
-                                                </span></div>
-                                            <div class=" mb-5">
-                                                <label for="email"
-                                                    class="block mb-2 text-sm font-medium text-gray-600">Email</label>
-                                                <input type="text" name="email"
-                                                    class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none"
-                                                    required>
-                                            </div>
-                                            <div class="mb-5">
-                                                {{ recaptcha }}
-                                            </div>
-                                            <button class="w-full p-3 mt-4 bg-indigo-600 text-white rounded shadow"
-                                                type="submit">Restore Account</button>
-                                        </form>
-                                        {%endblock%}
-                                    </div>
+    <div class="bg-white min-h-screen flex items-center justify-center dark:text-gray-200 dark:bg-gray-900">
+        <div class="relative w-full">
+            <div
+                class="absolute top-50-10 -right-0 w-80 h-72 bg-indigo-300 rounded-xl mix-blend-multiply filter blur-xl opacity-70 animate-blob">
+            </div>
+            <div
+                class="absolute top-50 -right-0 w-15 h-72 bg-yellow-300 mix-blend-multiply filter blur-xl opacity-70 animate-blob">
+            </div>
+            <div
+                class="absolute top-20 -left-4 w-20 h-20 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000">
+            </div>
+            <div
+                class="absolute bottom-20 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000">
+            </div>
+            <div class="hero min-h-screen">
+                <div class="hero-content flex-col lg:flex-row">
+                    <div class=" relative container mx-auto flex">
+                        <div class="max-w-md w-full mx-auto">
+                            <h1 class="text-4xl text-center mb-12 font-thin">Forget Password</h1>
+                            <div
+                                class="bg-white rounded-lg overflow-hidden shadow-2xl dark:text-gray-200 dark:bg-gray-600">
+                                <div class="p-8">
+                                    {%block content%}
+                                    <form method="POST" action="/forgetpass">
+                                        <div class="bg-warning shadow-lg rounded mb-2 pl-2 pr-2 font-3xl"><span
+                                                class="font-3xl text-slate-300 italic leading-loose">{{msg}}
+                                            </span></div>
+                                        <div class=" mb-5">
+                                            <label for="email"
+                                                class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">Email</label>
+                                            <input type="text" name="email"
+                                                class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none dark:text-black"
+                                                required>
+                                        </div>
+                                        <div class="mb-5">
+                                            {{ recaptcha }}
+                                        </div>
+                                        <button
+                                            class="w-full p-3 mt-4 bg-indigo-600 text-white rounded shadow dark:text-gray-200 dark:bg-gray-900"
+                                            type="submit">Restore Account</button>
+                                    </form>
+                                    {%endblock%}
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <div class="w-96 shadow-xl">
-                                <div class="mockup-code">
-                                    <pre data-prefix="1"><code>don't worry</code></pre>
-                                    <pre data-prefix="2"><code>Forget password</code></pre>
-                                    <pre data-prefix="3"
-                                        class="bg-warning text-warning-content rounded p-2"><code>Restore my account</code></pre>
-                                </div>
+                    </div>
+                    <div>
+                        <div class="w-96 shadow-xl">
+                            <div class="mockup-code">
+                                <pre data-prefix="1"><code>don't worry</code></pre>
+                                <pre data-prefix="2"><code>Forget password</code></pre>
+                                <pre data-prefix="3"
+                                    class="bg-warning text-warning-content rounded p-2 dark:bg-gray-600"><code>Restore my account</code></pre>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 </body>
 
 </html>

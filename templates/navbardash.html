@@ -1,7 +1,35 @@
 <nav id="header1"
-    class="bg-white w-auto flex-1 border-b-1 border-gray-300 order-1 lg:order-2 dark:text-gray-200 bg-white dark:bg-gray-600">
+    class="bg-white w-auto flex-1 border-b-1 border-gray-300 order-1 lg:order-2 dark:text-gray-200 dark:bg-gray-600">
     <div class="flex h-full justify-between items-center">
-        <!--Search-->
+        <div class="ml-2 items-center">
+            <div class="navbar-start">
+                <div class="dropdown">
+                    <label tabindex="0" class="btn btn-ghost btn-circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h7" />
+                        </svg>
+                        <p> ecsa</p>
+                    </label>
+                    <ul tabindex="0"
+                        class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 dark:text-gray-200 dark:bg-gray-600">
+                        <li class="dark:text-gray-200"><a data-widgster="expand" title="Add Source"
+                                href="{{url_for('dashboard')}}"> Dashboard</a>
+                        </li>
+                        <li class="dark:text-gray-200"><a data-widgster="expand" title="Add Source"
+                                href="{{url_for('detail')}}"> My Assets</a>
+                        </li>
+                        <li class="dark:text-gray-200"><a data-widgster="expand" title="Add Source"
+                                href="{{url_for('group')}}">Group</a>
+                        </li>
+                        <li class="dark:text-gray-200"><a data-widgster="expand" title="Add Source"
+                                href="{{url_for('collab')}}">Collaboration</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <div class="relative w-full max-w-auto px-6">
             <div class="absolute h-10 mt-1 left-0 top-0 flex items-center pl-10">
                 <svg class="h-4 w-4 fill-current text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -10,18 +38,13 @@
                     </path>
                 </svg>
             </div>
-
-            <input id="search-toggle" type="search" placeholder="Redeem your password"
-                class="block w-full bg-gray-200 focus:outline-none focus:bg-white focus:shadow-md text-gray-700 font-bold rounded-full pl-12 pr-4 py-3"
-                onkeyup="updateSearchResults(this.value);">
-
+            <form action="/redeem" method="post">
+                <input id="search" name="search" type="text" placeholder="Redeem Your password"
+                    class="block w-full bg-gray-200 focus:outline-none focus:bg-white focus:shadow-md text-gray-700 font-bold rounded-full pl-12 pr-4 py-3">
+            </form>
         </div>
-        <!-- / Search-->
-
-        <!--Menu-->
-
-        <div class="flex relative inline-block pr-6">
-            <div class="relatif m-2 items-center justify-center">
+        <div class=" flex relative inline-block pr-6">
+            <div class=" hidden lg:block md:block m-2 items-center justify-center">
                 <div class="w-14 h-8">
                     <input type="checkbox" id="dark-mode-toggle" class="hidden"
                         onchange="document.documentElement.classList.toggle('dark')" />
@@ -38,15 +61,14 @@
                 <div class="dropdown dropdown-end">
                     <label tabindex="0" class="btn btn-ghost btn-circle avatar">
                         <div class="w-10 rounded-full">
-                            <img src="https://api.lorem.space/image/face?hash=33791" />
+                            <img src="{{image}}">
                         </div>
                     </label>
                     <ul tabindex="0"
                         class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52 dark:text-gray-200 dark:bg-gray-900">
                         <li>
-                            <a class="justify-between">
+                            <a href="{{ url_for('profile') }}">
                                 Profile
-                                <span class="badge">New</span>
                             </a>
                         </li>
                         <li><a>Settings</a></li>
@@ -71,11 +93,6 @@
                     </ul>
                 </div>
             </div>
-
         </div>
-
-        <!-- / Menu -->
-
     </div>
-
 </nav>

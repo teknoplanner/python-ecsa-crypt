@@ -1,0 +1,43 @@
+<nav id="header1"
+    class="bg-white w-auto flex-1 border-b-1 border-gray-300 order-1 lg:order-2 dark:text-gray-200 dark:bg-gray-600">
+    <div class="flex h-full justify-between items-center">
+        <div class="ml-2 items-center">
+            <div class="navbar-start">
+                <div class="dropdown">
+                    <label tabindex="0" class="btn btn-ghost btn-circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h7" />
+                        </svg>
+                        <p> ecsa</p>
+                    </label>
+                    <ul tabindex="0"
+                        class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 dark:text-gray-200 dark:bg-gray-600">
+                        <li class="dark:text-gray-200"><a data-widgster="expand" title="Add Source"
+                                href="{{url_for('dashboard')}}"> Dashboard</a>
+                        </li>
+                        <li class="dark:text-gray-200"><a data-widgster="expand" title="Add Source"
+                                href="{{url_for('detail')}}"> My Assets</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="flex relative inline-block pr-6">
+            <div class="m-2 items-center justify-center">
+                <div class="w-14 h-8">
+                    <input type="checkbox" id="dark-mode-toggle" class="hidden"
+                        onchange="document.documentElement.classList.toggle('dark')" />
+                    <label for="dark-mode-toggle"
+                        class="w-full h-full bg-gray-800 dark:bg-white rounded-full p-1 flex justify-between cursor-pointer">
+                        <span class="inline dark:hidden">🌞</span>
+                        <span
+                            class="w-6 h-6 rounded-full bg-white dark:bg-gray-800 block float-right dark:float-left"></span>
+                        <span class="hidden dark:inline">🌛</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

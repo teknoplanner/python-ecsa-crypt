@@ -1,10 +1,9 @@
 from ctypes import alignment
 from os import abort
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from wordbank import acak, getresult, angka, simbol, alphabet
+from service import acak, getresult, angka, new_simbol, simbol, alphabet, gen_pass
 import secrets
 import random
-from Univ_pass import gen_pass
 from flaskext.mysql import MySQL
 import pymysql
 import hashlib
@@ -18,6 +17,8 @@ from flask_paranoid import Paranoid
 from flask_paginate import Pagination, get_page_parameter
 from flask_qrcode import QRcode
 from pymysql import cursors
+import os
+from flask_uploads import IMAGES, UploadSet, configure_uploads
 
 app = Flask(__name__)
 app.secret_key = "BisMilaahHanya4allAhY4n6TauAamiin!#"
@@ -41,6 +42,10 @@ app.config['MAIL_PASSWORD'] = 'hryriwvwmkopeqkc'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['CRSF_ENABLE'] = True
+photos = UploadSet("photos", IMAGES)
+app.config["UPLOADED_PHOTOS_DEST"] = "static/images/profile"
+configure_uploads(app, photos)
+app.config['UPLOADED_PHOTOS_ALLOW'] = set(['png', 'jpg', 'jpeg'])
 mail = Mail(app)
 
 paranoid = Paranoid(app)
@@ -60,14 +65,19 @@ def not_found(e):
     return render_template("404.html"), 404
 
 
-# @app.errorhandler(500)
-# def internal_error(e):
-#     return render_template('500.html'), 500
+@app.errorhandler(500)
+def internal_error(e):
+    return render_template('500.html'), 500
 
 
-# @paranoid.on_invalid_session
-# def invalid_session():
-#     render_template('401.html'), 401
+@paranoid.on_invalid_session
+def invalid_session():
+    render_template('401.html'), 401
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -78,7 +88,6 @@ def login():
     cursor = conn.cursor(pymysql.cursors.DictCursor)
     msg = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        # Create variables for easy access
         username = request.form['username']
         password = request.form['password']
         cursor.execute(
@@ -120,6 +129,7 @@ def login():
                     cursor.execute('UPDATE users SET activation=%s WHERE email=%s',
                                    (token, sendmail))
                     conn.commit()
+                    conn.close()
                     msg = "Your Account not Active, Please Check inbox/spam email for Activation"
             else:
                 msg = ' Incorrect username/password! '
@@ -127,8 +137,6 @@ def login():
         else:
             msg = ' Incorrect username/password! '
             return render_template('login.html', msg=msg)
-        conn.close()
-        return render_template('login.html', msg=msg)
     return render_template('login.html', msg=msg)
 
 
@@ -138,113 +146,78 @@ def signout():
     return redirect(url_for('login'))
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-
-@app.route("/smartpass")
-def smartpass():
-    # current_data
-    new_angka = acak(angka)
-    new_simbol = acak(simbol)
-    result1 = getresult(1)
-    result2 = getresult(2)
-    result3 = getresult(3)
-    result4 = getresult(4)
-    result5 = getresult(5)
-    result6 = getresult(6)
-    result7 = getresult(7)
-
-    new_wordbank = ''
-    new_result = ''
-
-    if len(new_wordbank) <= 2:
-        for char in range(0, 1):
-            new_result += random.choice(result1)
-            new_result += random.choice(result7)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 3:
-        for char in range(0, 1):
-            new_result += random.choice(result2)
-            new_result += random.choice(result6)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 4:
-        for char in range(0, 1):
-            new_result += random.choice(result3)
-            new_result += random.choice(result5)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 5:
-        for char in range(0, 1):
-            new_result += random.choice(result4)
-            new_result += random.choice(result4)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 6:
-        for char in range(0, 1):
-            new_result += random.choice(result5)
-            new_result += random.choice(result3)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 7:
-        for char in range(0, 1):
-            new_result += random.choice(result6)
-            new_result += random.choice(result2)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 8:
-        for char in range(0, 1):
-            new_result += random.choice(result7)
-            new_result += random.choice(result1)
-            new_wordbank = new_result
-    else:
-        for char in range(0, 1):
-            new_wordbank = new_result
-
-    wordlist = new_wordbank
-    while wordlist not in gen_pass.values:
-        password = wordlist
-        wordlist = password.join(secrets.choice(alphabet)
-                                 for password in range(2))
-        new_wordlist = wordlist.capitalize() + new_angka + new_simbol
-        break
-
-    securepass1 = wordlist[0].capitalize()
-    securepass2 = wordlist[-1].lower()
-    uniq = new_angka + new_simbol
-    remember = new_wordbank
-    generator = new_wordlist
-    tabur = 'dx2'
-    hashcode = hashlib.sha256(str(generator).encode('utf-8'))
-    hash_digit = hashcode.hexdigest()
-    uniq_hash = tabur + hash_digit
-    connection = mysql.get_db()
-    cursor = connection.cursor()
-    cursor.execute(
-        "INSERT INTO bank(password,hashcode) VALUES (%s,%s)", (generator, uniq_hash))
-    connection.commit()
-    connection.close()
-    return render_template('smartpass.html', data=generator, data2=remember, data3=uniq, data4=securepass1, data5=securepass2, uniq_hash=uniq_hash)
-
-
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     if "username" not in session:
         return redirect(url_for("login"))
     else:
+        msg = ''
         hashcode = session["hashcode"]
+        Getuser = session["username"]
+        akses = 'public'
         cursor = mysql.connect().cursor()
         cursor.execute(
-            'SELECT * FROM newitem WHERE usercode = %s ORDER BY created_time DESC LIMIT 10', (hashcode))
-        showbank = cursor.fetchall()
-        if request.method == 'POST' and 'keycode' in request.form:
-            akses = 'public'
-            getkey = request.form['keycode']
+            'SELECT * FROM newitem WHERE access = %s', (akses))
+        Getshowbank = cursor.fetchall()
+        if Getshowbank and 'search' in request.form:
+            searchValue = request.form['search']
             cursor = mysql.connect().cursor()
             cursor.execute(
-                'SELECT source, deskripsi, password,  keycode FROM newitem WHERE keycode=%s AND Access=%s', (getkey, akses))
-            RedeemAccess = cursor.fetchall()
+                'SELECT * FROM newitem WHERE source LIKE %s AND access=%s', (searchValue, akses))
+            showbank = cursor.fetchall()
             cursor.close()
-            return render_template("dashboard.html", showbank=showbank, RedeemAccess=RedeemAccess, name=session["username"])
+            if showbank:
+                return render_template("dashboard.html", showbank=showbank, name=session["username"])
+            else:
+                msg = 'Not Found'
+                cursor = mysql.connect().cursor()
+                cursor.execute(
+                    'SELECT * FROM newitem WHERE access = %s ORDER BY created_time DESC LIMIT 10', (akses))
+                showbank = cursor.fetchall()
+                cursor.close()
+                return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"])
         else:
-            return render_template("dashboard.html", showbank=showbank)
+            cursor = mysql.connect().cursor()
+            cursor.execute(
+                'SELECT * FROM newitem WHERE access = %s ORDER BY created_time DESC LIMIT 10', (akses))
+            showbank = cursor.fetchall()
+            cursor.close()
+            return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"])
+
+
+@app.route("/redeem", methods=["GET", "POST"])
+def redeem():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    else:
+        msg = ''
+        hashcode = session["hashcode"]
+        Getuser = session["username"]
+        akses = 'public'
+        cursor = mysql.connect().cursor()
+        cursor.execute(
+            'SELECT access,source,password,deskripsi FROM newitem WHERE access = %s', (akses))
+        Getshowbank = cursor.fetchall()
+        if Getshowbank and 'search' in request.form:
+            searchValue = request.form['search']
+            cursor = mysql.connect().cursor()
+            cursor.execute(
+                'SELECT access,source,password,deskripsi FROM newitem WHERE keycode LIKE %s AND access=%s', (searchValue, akses))
+            showbank = cursor.fetchall()
+            cursor.close()
+            if showbank:
+                fixed = 'http://192.168.2.7/'
+                aksesKey = fixed + searchValue
+                get_qr = str(aksesKey)
+                qr_generator = QRcode.qrcode(
+                    data=get_qr, error_correction='H', icon_img='static/images/marmutbarcode.jpg')
+                return render_template("redeem.html", showbank=showbank, qr=qr_generator, searchValue=searchValue, name=session["username"])
+            else:
+                msg = 'Data Not Found'
+                return render_template("redeem.html", msg=msg, showbank=showbank, name=session["username"])
+        else:
+            msg = 'Data Not Found'
+            return render_template("redeem.html", msg=msg)
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -252,22 +225,37 @@ def profile():
     if "username" not in session:
         return redirect(url_for("login"))
     else:
-        hashcode = session["hashcode"]
-        cursor = mysql.connect().cursor()
+        Getuser = session["username"]
+        conn = mysql.connect()
+        cursor = conn.cursor()
         cursor.execute(
-            'SELECT * FROM newitem WHERE usercode = %s ORDER BY created_time DESC LIMIT 10', (hashcode))
-        showbank = cursor.fetchall()
-        if request.method == 'POST' and 'keycode' in request.form:
-            akses = 'public'
-            getkey = request.form['keycode']
+            'SELECT pic_url FROM users WHERE username=%s', (Getuser))
+        data = str(cursor.fetchone()[0])
+        cursor.close()
+        if request.method == 'POST' and 'photo' in request.files:
             cursor = mysql.connect().cursor()
             cursor.execute(
-                'SELECT source, deskripsi, password,  keycode FROM newitem WHERE keycode=%s AND Access=%s', (getkey, akses))
-            RedeemAccess = cursor.fetchall()
+                'SELECT id FROM users WHERE username = %s ', (Getuser))
+            member = cursor.fetchone()
+            (id, *others) = member
+            profilepic_name = str(id)+'.png'
+            profilepic_url = '/static/images/profile/' + profilepic_name
+            workingdir = os.path.abspath(os.getcwd())
+            fullprofilepic_url = workingdir + profilepic_url
+            if os.path.isfile(fullprofilepic_url) == True:
+                os.remove(fullprofilepic_url)
+            photos.save(request.files['photo'],
+                        folder=None, name=profilepic_name)
+
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(
+                'UPDATE users SET pic_url=%s WHERE username=%s', (profilepic_url, Getuser))
+            member = cursor.fetchone()
+            conn.commit()
             cursor.close()
-            return render_template("profile.html", showbank=showbank, RedeemAccess=RedeemAccess, name=session["username"])
-        else:
-            return render_template("profile.html", showbank=showbank)
+            return render_template('profile.html', image=data, Getuser=Getuser)
+        return render_template('profile.html', image=data, Getuser=Getuser)
 
 
 @app.route("/additem", methods=['GET', 'POST'])
@@ -560,6 +548,22 @@ def wordbank():
     return render_template('wordbank.html', msg=msg)
 
 
+@app.route("/group", methods=['GET', 'POST'])
+def group():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    else:
+        return render_template('group.html')
+
+
+@app.route("/collab", methods=['GET', 'POST'])
+def collab():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    else:
+        return render_template('collab.html')
+
+
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     msg = ''
@@ -706,6 +710,36 @@ def restoreAccount(token):
     return render_template('recoverypass.html')
 
 
+@app.route('/account/delete',  methods=['GET', 'POST'])
+def accountDelete():
+    msg = ''
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        cursor.execute(
+            'SELECT uniqcode FROM users WHERE username = %s', (username))
+        uniq = cursor.fetchone()
+        if uniq is not None:
+            uniqcode = uniq.get('uniqcode')
+            passkey = uniqcode.join(reversed(password)) + 'dd'
+            ruleppass = hashlib.sha256(str(passkey).encode('utf-8'))
+            encpass = ruleppass.hexdigest()
+            conn.close()
+            conn = mysql.connect()
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute(
+                'SELECT * FROM users WHERE username = %s AND password = %s AND email = %s', (username, encpass, email))
+            account = cursor.fetchone()
+            if account and recaptcha.verify():
+                return redirect(url_for("login"))
+            else:
+                return render_template('accountDelete.html')
+        else:
+            return render_template('accountDelete.html')
+    return render_template('accountDelete.html')
+
+
 @ app.route('/<uniqcode>')
 def uniqcode(uniqcode):
     conn = mysql.connect()
@@ -721,6 +755,85 @@ def uniqcode(uniqcode):
         return render_template('404.html')
 
 
+@app.route("/smartpass")
+def smartpass():
+    # current_data
+    new_angka = new_angka
+    new_simbol = new_simbol
+    result1 = getresult(1)
+    result2 = getresult(2)
+    result3 = getresult(3)
+    result4 = getresult(4)
+    result5 = getresult(5)
+    result6 = getresult(6)
+    result7 = getresult(7)
+    new_wordbank = ''
+    new_result = ''
+
+    if len(new_wordbank) <= 2:
+        for char in range(0, 1):
+            new_result += random.choice(result1)
+            new_result += random.choice(result7)
+            new_wordbank = new_result
+    elif len(new_wordbank) <= 3:
+        for char in range(0, 1):
+            new_result += random.choice(result2)
+            new_result += random.choice(result6)
+            new_wordbank = new_result
+    elif len(new_wordbank) <= 4:
+        for char in range(0, 1):
+            new_result += random.choice(result3)
+            new_result += random.choice(result5)
+            new_wordbank = new_result
+    elif len(new_wordbank) <= 5:
+        for char in range(0, 1):
+            new_result += random.choice(result4)
+            new_result += random.choice(result4)
+            new_wordbank = new_result
+    elif len(new_wordbank) <= 6:
+        for char in range(0, 1):
+            new_result += random.choice(result5)
+            new_result += random.choice(result3)
+            new_wordbank = new_result
+    elif len(new_wordbank) <= 7:
+        for char in range(0, 1):
+            new_result += random.choice(result6)
+            new_result += random.choice(result2)
+            new_wordbank = new_result
+    elif len(new_wordbank) <= 8:
+        for char in range(0, 1):
+            new_result += random.choice(result7)
+            new_result += random.choice(result1)
+            new_wordbank = new_result
+    else:
+        for char in range(0, 1):
+            new_wordbank = new_result
+
+    wordlist = new_wordbank
+    while wordlist not in gen_pass.values:
+        password = wordlist
+        wordlist = password.join(secrets.choice(alphabet)
+                                 for password in range(2))
+        new_wordlist = wordlist.capitalize() + new_angka + new_simbol
+        break
+    securepass1 = wordlist[0].capitalize()
+    securepass2 = wordlist[-1].lower()
+    uniq = new_angka + new_simbol
+    remember = new_wordbank
+    generator = new_wordlist
+    tabur = 'dx2'
+    hashcode = hashlib.sha256(str(generator).encode('utf-8'))
+    hash_digit = hashcode.hexdigest()
+    uniq_hash = tabur + hash_digit
+    connection = mysql.get_db()
+    cursor = connection.cursor()
+    cursor.execute(
+        "INSERT INTO bank(password,hashcode) VALUES (%s,%s)", (generator, uniq_hash))
+    connection.commit()
+    connection.close()
+    return render_template('smartpass.html', data=generator, data2=remember, data3=uniq, data4=securepass1, data5=securepass2, uniq_hash=uniq_hash)
+
+
 if __name__ == "__main__":
     app.debug = True
-    app.run(host='192.168.2.10', port=80)
+    app.run(host='0.0.0.0', port=80)

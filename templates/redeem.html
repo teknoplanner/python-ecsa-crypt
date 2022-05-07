@@ -13,14 +13,10 @@
         </div>
         <div class="w-auto mx-5 my-5 lg:mx-20 lg:my-14">
             <div class="flex flex-col lg:flex-row justify-center lg:space-x-12">
-                <div class="bg-base-200 shadow-2xl rounded-box p-2 lg:p-10 items-center">
+                <div class="text-2xl font-black">{{msg}}</div>
+                {% for row in showbank %}
+                <div class="bg-base-200 shadow-2xl rounded-box p-2 lg:p-5 items-center">
                     <img src="{{qr}}" width="100%">
-                    <div class="m-5 flex flex-col">
-                        <span class="text-lg items-center justify-center font-bold">Steps Redeem Password WI-FI:</span>
-                        <span>1. Use Smartphone, support QR code Scanner Application</span>
-                        <span>2. Install Google lens/QR code Scanner App on Playstore or AppStore</span>
-                        <span>3. Scan QR Code, enjoy!</span>
-                    </div>
                 </div>
                 <div class="flex flex-col">
                     <div class="flex flex-row mb-5">
@@ -31,20 +27,32 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
+                                <div class="text-clip">
+                                    {{searchValue}} </div>
                             </div>
                         </div>
 
                     </div>
                     <div class="mockup-code">
                         <pre data-prefix="$"><code>get keycode</code></pre>
+                        <pre data-prefix="$"><code>{{searchValue}}</code></pre>
                         <pre data-prefix=">" class="text-warning"><code>redeem ..</code></pre>
                         <pre data-prefix=">" class="text-success"><code>show data</code></pre>
+                        <pre data-prefix="#"
+                            class="bg-warning text-warning-content"><code>access = {{row[0]}}</code></pre>
+                        <pre data-prefix="#"
+                            class="bg-warning text-warning-content"><code>description = {{row[3]}}</code></pre>
+                        <pre data-prefix="#"
+                            class="bg-success text-warning-content"><code>SSID =  {{row[1]}}</code></pre>
+                        <pre data-prefix="#"
+                            class="bg-success text-warning-content"><code>password = {{row[2]}}</code></pre>
                         <pre data-prefix="$" class="text-success"><code>Done!</code></pre>
 
                     </div>
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
 </body>
 
