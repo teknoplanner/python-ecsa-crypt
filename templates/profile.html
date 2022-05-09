@@ -6,10 +6,12 @@
 
 </head>
 
-
-<body class="dark:text-gray-200 dark:bg-gray-900">
+<body class="min-h-screen dark:text-gray-200 dark:bg-gray-900">
+  <div class="h-20 lg:h-20 w-full flex flex-wrap">
+    {% include "navbardash.html" %}
+  </div>
   {%block content%}
-  <div class=" dark:bg-gray-900 flex flex-wrap items-center justify-center">
+  <div class="min-h-screen bg-indigo-300 dark:bg-gray-900 flex flex-wrap items-center justify-center">
     <div class="container max-w-lg bg-white rounded dark:bg-gray-800 shadow-lg transform duration-200 easy-in-out m-12">
       <div class="h-2/4 sm:h-64 overflow-hidden">
         <img class="w-full rounded-t" src="https://source.unsplash.com/random/?city"
@@ -26,9 +28,9 @@
           <div class="col-lg-4 order-lg-1 text-center">
             <form role="form" action="/profile" method="post" enctype=multipart/form-data>
               <label class="custom-file">
-                <input type="file" id="photo" name="photo" class="custom-file-input">
+                <input type="file" id="photo" name="photo" class="custom-file-input" required>
               </label>
-              <button type="submit" class="btn btn-outline-success btn-sm">Upload Photo</button>
+              <button type="submit" class="btn btn-outline-success btn-sm">Change Profile</button>
             </form>
             {%endblock%}
           </div>
@@ -39,11 +41,8 @@
           <a href="{{ url_for('forgetpass') }}"><button class="btn btn-wide w-11/12">
               <p class="text-xs">Change Password</p>
             </button></a>
-          <a href="{{ url_for('forgetpass') }}"><button class="btn btn-wide w-11/12">
+          <a href="{{ url_for('email') }}"><button class="btn btn-wide w-11/12">
               <p class="text-xs">Change Email</p>
-            </button></a>
-          <a href="{{ url_for('accountDelete') }}"><button class="btn btn-wide w-full">
-              <p class="text-xs">Delete Account Permanent</p>
             </button></a>
         </div>
       </div>

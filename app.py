@@ -1,6 +1,7 @@
 from ctypes import alignment
 from os import abort
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from urllib import response
+from flask import Flask, render_template, request, redirect, url_for, make_response, send_file
 from service import acak, getresult, angka, new_simbol, simbol, alphabet, gen_pass
 import secrets
 import random
@@ -19,6 +20,7 @@ from flask_qrcode import QRcode
 from pymysql import cursors
 import os
 from flask_uploads import IMAGES, UploadSet, configure_uploads
+import pdfkit
 
 app = Flask(__name__)
 app.secret_key = "BisMilaahHanya4allAhY4n6TauAamiin!#"
@@ -159,6 +161,12 @@ def dashboard():
         cursor.execute(
             'SELECT * FROM newitem WHERE access = %s', (akses))
         Getshowbank = cursor.fetchall()
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute(
+            'SELECT pic_url FROM users WHERE username=%s', (Getuser))
+        images = str(cursor.fetchone()[0])
+        cursor.close()
         if Getshowbank and 'search' in request.form:
             searchValue = request.form['search']
             cursor = mysql.connect().cursor()
@@ -167,7 +175,7 @@ def dashboard():
             showbank = cursor.fetchall()
             cursor.close()
             if showbank:
-                return render_template("dashboard.html", showbank=showbank, name=session["username"])
+                return render_template("dashboard.html", showbank=showbank, name=session["username"], images=images)
             else:
                 msg = 'Not Found'
                 cursor = mysql.connect().cursor()
@@ -175,14 +183,14 @@ def dashboard():
                     'SELECT * FROM newitem WHERE access = %s ORDER BY created_time DESC LIMIT 10', (akses))
                 showbank = cursor.fetchall()
                 cursor.close()
-                return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"])
+                return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"], images=images)
         else:
             cursor = mysql.connect().cursor()
             cursor.execute(
                 'SELECT * FROM newitem WHERE access = %s ORDER BY created_time DESC LIMIT 10', (akses))
             showbank = cursor.fetchall()
             cursor.close()
-            return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"])
+            return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"], images=images)
 
 
 @app.route("/redeem", methods=["GET", "POST"])
@@ -394,8 +402,8 @@ def edit(id):
             return render_template('edit.html', get_id=get_id, msg=msg)
 
 
-@app.route("/detail/<int:id>/QRcode", methods=['GET', 'POST'])
-def Qrcode(id):
+@app.route("/detail/<int:id>/qrcode", methods=['GET', 'POST'])
+def qrcode(id):
     if "username" not in session:
         return redirect(url_for("login"))
     else:
@@ -413,10 +421,24 @@ def Qrcode(id):
             get_qr = str(aksesKey)
             qr_generator = QRcode.qrcode(
                 data=get_qr, error_correction='H', icon_img='static/images/marmutbarcode.jpg')
-            return render_template('detailsource.html', qr=qr_generator, get_key=aksesKey)
+            if request.method == 'POST' and 'checkbox' in request.form:
+                checkbox = request.form['checkbox']
+                if checkbox == "1":
+                    name = "qrcode"
+                    html = render_template(
+                        "pdf.html",
+                        name=name, qr=qr_generator, id=id)
+                    pdf = pdfkit.from_string(html, False)
+                    response = make_response(pdf)
+                    response.headers["Content-Type"] = "application/pdf"
+                    response.headers["Content-Disposition"] = "inline; filename=qrcode.pdf"
+                    return response
+            else:
+                return render_template('detailsource.html', qr=qr_generator, get_key=aksesKey, id=id)
+            return render_template('detailsource.html', qr=qr_generator, get_key=aksesKey, id=id)
 
 
-@app.route("/show", methods=['GET', 'POST'])
+@ app.route("/show", methods=['GET', 'POST'])
 def show():
     if "username" and "uniqcode" not in session:
         return redirect(url_for("login"))
@@ -446,7 +468,7 @@ def show():
     return render_template('show.html', msg=msg)
 
 
-@app.route("/addRequired", methods=['GET', 'POST'])
+@ app.route("/addRequired", methods=['GET', 'POST'])
 def addRequired():
     if "username" not in session:
         return redirect(url_for("login"))
@@ -577,14 +599,11 @@ def register():
         uniqcoder = new_alfa + new_angka + new_alfa2
         uniqcode = ''.join(random.choice(uniqcoder) for i in range(3))
         tabur = uniqcode
-
-        # hash_prosess
         hashcode = hashlib.sha256(str(username).encode('utf-8'))
         hash_digit = hashcode.hexdigest()
         passkey = uniqcode.join(reversed(password)) + 'dd'
         ruleppass = hashlib.sha256(str(passkey).encode('utf-8'))
         encpass = ruleppass.hexdigest()
-
         uniq_hash = tabur + hash_digit
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -618,7 +637,6 @@ def register():
                 cursor.close()
             else:
                 msg = 'Invalid ReCaptcha'
-
     return render_template('register.html', msg=msg)
 
 
@@ -701,22 +719,15 @@ def forgetpass():
     return render_template('forgetpass.html', msg=msg)
 
 
-@app.route('/restoreaccount/<token>')
-def restoreAccount(token):
-    try:
-        email = s.loads(token, salt='Abagabogapasde', max_age=360)
-    except SignatureExpired:
-        return render_template('expiredpass.html')
-    return render_template('recoverypass.html')
-
-
-@app.route('/account/delete',  methods=['GET', 'POST'])
-def accountDelete():
+@app.route('/email',  methods=['GET', 'POST'])
+def email():
     msg = ''
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+    if request.method == 'POST' and 'email' in request.form and 'username' in request.form and 'password' in request.form:
+        email = request.form['email']
         username = request.form['username']
         password = request.form['password']
-        email = request.form['email']
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
         cursor.execute(
             'SELECT uniqcode FROM users WHERE username = %s', (username))
         uniq = cursor.fetchone()
@@ -729,15 +740,89 @@ def accountDelete():
             conn = mysql.connect()
             cursor = conn.cursor(pymysql.cursors.DictCursor)
             cursor.execute(
-                'SELECT * FROM users WHERE username = %s AND password = %s AND email = %s', (username, encpass, email))
+                'SELECT username, password FROM users WHERE username = %s AND password = %s', (username, encpass))
             account = cursor.fetchone()
             if account and recaptcha.verify():
-                return redirect(url_for("login"))
+                resetActivation = 'change email'
+                conn = mysql.connect()
+                cursor = conn.cursor()
+                cursor.execute('UPDATE users SET email=%s, verification=%s WHERE username=%s AND password=%s',
+                               (email, resetActivation, username, encpass))
+                conn.commit()
+                conn.close()
+                sendmail = email.split()
+                token = s.dumps(email, salt="Abagaboga")
+                msg = Message('Activation account', sender='ecsaproject@gmail.com',
+                              recipients=sendmail)
+                link = url_for('confirm_email',
+                               token=token, _external=True)
+                msg.body = "Please No Reply"
+                msg.body = "click link for activation:{}".format(link)
+                mail.send(msg)
+                conn = mysql.connect()
+                cursor = conn.cursor()
+                cursor.execute('UPDATE users SET activation=%s WHERE email=%s',
+                               (token, sendmail))
+                conn.commit()
+                conn.close()
+                msg = "Your e-mail has changed , Please Check inbox/spam new email for Activation"
             else:
-                return render_template('accountDelete.html')
+                msg = 'Account Not Found'
+                return render_template('changeemail.html', msg=msg)
         else:
-            return render_template('accountDelete.html')
-    return render_template('accountDelete.html')
+            msg = 'Salah'
+            return render_template('changeemail.html', msg=msg)
+    return render_template('changeemail.html', msg=msg)
+
+
+@app.route('/deleteaccount',  methods=['GET', 'POST'])
+def deleteaccount():
+    msg = ''
+    if request.method == 'POST' and 'email' in request.form and 'username' in request.form and 'password' in request.form:
+        email = request.form['email']
+        username = request.form['username']
+        password = request.form['password']
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute(
+            'SELECT uniqcode FROM users WHERE username = %s', (username))
+        uniq = cursor.fetchone()
+        if uniq is not None:
+            uniqcode = uniq.get('uniqcode')
+            passkey = uniqcode.join(reversed(password)) + 'dd'
+            ruleppass = hashlib.sha256(str(passkey).encode('utf-8'))
+            encpass = ruleppass.hexdigest()
+            conn.close()
+            conn = mysql.connect()
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute(
+                'SELECT hashcode FROM users WHERE username = %s AND password = %s AND email=%s', (username, encpass, email))
+            account = cursor.fetchone()
+            if account and recaptcha.verify():
+                conn = mysql.connect()
+                cursor = conn.cursor()
+                cursor.execute('DELETE users, newitem from users INNER JOIN newitem ON newitem.usercode = users.hashcode Where username',
+                               (account))
+                conn.commit()
+                conn.close()
+                msg = 'Your account has been successfully deleted'
+                return render_template('accountDelete.html', msg=msg)
+            else:
+                msg = "Account Not found"
+                return render_template('accountDelete.html', msg=msg)
+        else:
+            msg = "Not Valid"
+            return render_template('accountDelete.html', msg=msg)
+    return render_template('accountDelete.html', msg=msg)
+
+
+@app.route('/restoreaccount/<token>')
+def restoreAccount(token):
+    try:
+        email = s.loads(token, salt='Abagabogapasde', max_age=360)
+    except SignatureExpired:
+        return render_template('expiredpass.html')
+    return render_template('recoverypass.html')
 
 
 @ app.route('/<uniqcode>')
