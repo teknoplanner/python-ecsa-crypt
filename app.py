@@ -21,6 +21,7 @@ from pymysql import cursors
 import os
 from flask_uploads import IMAGES, UploadSet, configure_uploads
 import pdfkit
+import numpy as np
 
 app = Flask(__name__)
 app.secret_key = "BisMilaahHanya4allAhY4n6TauAamiin!#"
@@ -165,7 +166,7 @@ def dashboard():
         cursor = conn.cursor()
         cursor.execute(
             'SELECT pic_url FROM users WHERE username=%s', (Getuser))
-        images = str(cursor.fetchone()[0])
+        data = str(cursor.fetchone()[0])
         cursor.close()
         if Getshowbank and 'search' in request.form:
             searchValue = request.form['search']
@@ -175,7 +176,7 @@ def dashboard():
             showbank = cursor.fetchall()
             cursor.close()
             if showbank:
-                return render_template("dashboard.html", showbank=showbank, name=session["username"], images=images)
+                return render_template("dashboard.html", showbank=showbank, name=session["username"])
             else:
                 msg = 'Not Found'
                 cursor = mysql.connect().cursor()
@@ -183,14 +184,14 @@ def dashboard():
                     'SELECT * FROM newitem WHERE access = %s ORDER BY created_time DESC LIMIT 10', (akses))
                 showbank = cursor.fetchall()
                 cursor.close()
-                return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"], images=images)
+                return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"])
         else:
             cursor = mysql.connect().cursor()
             cursor.execute(
                 'SELECT * FROM newitem WHERE access = %s ORDER BY created_time DESC LIMIT 10', (akses))
             showbank = cursor.fetchall()
             cursor.close()
-            return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"], images=images)
+            return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"], image=data)
 
 
 @app.route("/redeem", methods=["GET", "POST"])
@@ -218,7 +219,7 @@ def redeem():
                 aksesKey = fixed + searchValue
                 get_qr = str(aksesKey)
                 qr_generator = QRcode.qrcode(
-                    data=get_qr, error_correction='H', icon_img='static/images/marmutbarcode.jpg')
+                    data=get_qr, error_correction='H', icon_img='static/images/publicWifi.jpg')
                 return render_template("redeem.html", showbank=showbank, qr=qr_generator, searchValue=searchValue, name=session["username"])
             else:
                 msg = 'Data Not Found'
@@ -295,6 +296,50 @@ def additem():
     return render_template('additem.html', msg=msg)
 
 
+@app.route("/addgroup", methods=['GET', 'POST'])
+def addgroup():
+    msg = ''
+    if "username" not in session:
+        return redirect(url_for("login"))
+    else:
+        access = 'public'
+        username = session['username']
+        hashcode = hashlib.sha256(str(username).encode('utf-8'))
+        hash_digit = hashcode.hexdigest()
+        uniq = session['uniqcode']
+        getUser = uniq + hash_digit
+        cursor = mysql.connect().cursor()
+        cursor.execute(
+            'SELECT source FROM newitem WHERE usercode = %s AND access= %s', (getUser, access))
+        showdata = cursor.fetchall()
+        if request.method == 'POST' and 'source' in request.form and 'description' in request.form and 'code' in request.form and 'assets' in request.form and 'action' in request.form:
+            source = request.form['source']
+            description = request.form['description']
+            code = request.form['code']
+            assets = request.form['assets']
+            action = request.form['action']
+            isAssets = assets.split(',')
+            connection = mysql.get_db()
+            cursor = mysql.connect().cursor()
+            query = "SELECT id FROM newitem WHERE source IN ('%s')" % "','".join(
+                isAssets)
+            cursor.execute(query)
+            iShowbank = cursor.fetchall()
+            bShowbank = []
+            for i in iShowbank:
+                bShowbank.append(i[0])
+            cursor.close()
+            idAssets = ",".join(str(x) for x in bShowbank)
+            cursor = connection.cursor()
+            cursor.execute('INSERT INTO mygroup(owner,assets,code,source,description,action) VALUES (%s,%s,%s,%s,%s,%s)',
+                           (username, idAssets, code, source, description, action))
+            connection.commit()
+            connection.close()
+            msg = 'You have successfully add new Group !'
+            return render_template('addgroup.html', showdata=showdata, msg=msg)
+    return render_template('addgroup.html', showdata=showdata, msg=msg)
+
+
 @app.route('/detail', methods=['GET', 'POST'])
 def detail():
     if "username" not in session:
@@ -321,7 +366,14 @@ def detail():
             pagination = Pagination(
                 page=page, per_page=limit, total=total)
             cursor.close()
-            return render_template("detail.html", data=showbank, pagination=pagination, next=next, prev=prev, name=session["username"])
+            Getuser = session["username"]
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(
+                'SELECT pic_url FROM users WHERE username=%s', (Getuser))
+            data = str(cursor.fetchone()[0])
+            cursor.close()
+            return render_template("detail.html", data=showbank, pagination=pagination, next=next, prev=prev, name=session["username"], image=data)
 
 
 @app.route("/detail/<int:id>/delete", methods=['GET', 'POST'])
@@ -356,6 +408,13 @@ def edit(id):
                 'SELECT * FROM newitem WHERE id = %s', (id))
             get_id = cursor.fetchall()
             msg = ''
+            Getuser = session["username"]
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(
+                'SELECT pic_url FROM users WHERE username=%s', (Getuser))
+            data = str(cursor.fetchone()[0])
+            cursor.close()
             if get_id and 'source' in request.form and 'deskripsi' in request.form and 'password' in request.form and 'access' in request.form and 'Private_key' in request.form:
                 source = request.form['source']
                 deskripsi = request.form['deskripsi']
@@ -399,7 +458,7 @@ def edit(id):
                     cursor.close()
                 msg = 'data has been successfully update'
                 return render_template('edit.html', get_id=get_id, msg=msg)
-            return render_template('edit.html', get_id=get_id, msg=msg)
+            return render_template('edit.html', get_id=get_id, msg=msg, image=data)
 
 
 @app.route("/detail/<int:id>/qrcode", methods=['GET', 'POST'])
@@ -420,7 +479,14 @@ def qrcode(id):
             aksesKey = fixed + get_key
             get_qr = str(aksesKey)
             qr_generator = QRcode.qrcode(
-                data=get_qr, error_correction='H', icon_img='static/images/marmutbarcode.jpg')
+                data=get_qr, error_correction='H', icon_img='static/images/publicWifi.jpg')
+            Getuser = session["username"]
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(
+                'SELECT pic_url FROM users WHERE username=%s', (Getuser))
+            data = str(cursor.fetchone()[0])
+            cursor.close()
             if request.method == 'POST' and 'checkbox' in request.form:
                 checkbox = request.form['checkbox']
                 if checkbox == "1":
@@ -434,7 +500,7 @@ def qrcode(id):
                     response.headers["Content-Disposition"] = "inline; filename=qrcode.pdf"
                     return response
             else:
-                return render_template('detailsource.html', qr=qr_generator, get_key=aksesKey, id=id)
+                return render_template('detailsource.html', image=data,  qr=qr_generator, get_key=aksesKey, id=id)
             return render_template('detailsource.html', qr=qr_generator, get_key=aksesKey, id=id)
 
 
@@ -575,7 +641,27 @@ def group():
     if "username" not in session:
         return redirect(url_for("login"))
     else:
-        return render_template('group.html')
+        Getuser = session["username"]
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute(
+            'SELECT pic_url FROM users WHERE username=%s', (Getuser))
+        data = str(cursor.fetchone()[0])
+        cursor.execute(
+            'SELECT id FROM users WHERE username=%s', (Getuser))
+        rowdata = str(cursor.fetchone()[0])
+        defId = ',1'
+        rowid = rowdata + defId
+        isId = rowid.split(',')
+        cursor.close()
+        connection = mysql.get_db()
+        cursor = mysql.connect().cursor()
+        query = "SELECT * FROM  mygroup WHERE subscriber IN ('%s')" % "','".join(
+                isId)
+        cursor.execute(query)
+        iShowbank = cursor.fetchall()
+        connection.close()
+        return render_template('group.html', image=data, iShowbank=iShowbank)
 
 
 @app.route("/collab", methods=['GET', 'POST'])
@@ -583,7 +669,14 @@ def collab():
     if "username" not in session:
         return redirect(url_for("login"))
     else:
-        return render_template('collab.html')
+        Getuser = session["username"]
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute(
+            'SELECT pic_url FROM users WHERE username=%s', (Getuser))
+        data = str(cursor.fetchone()[0])
+        cursor.close()
+        return render_template('collab.html', image=data)
 
 
 @app.route("/register", methods=['GET', 'POST'])

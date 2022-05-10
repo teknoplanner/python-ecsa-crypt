@@ -19,127 +19,67 @@
                 <div class="overflow-x-auto w-full items-center justify-center">
                     <button
                         class="mb-5 bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
-                        Add Group</button></a>
+                        <a href="{{url_for('addgroup')}}"> Add Group</button></a>
                     <table class="table w-full">
                         <!-- head -->
                         <thead>
                             <tr>
-                                <th>Cover</th>
-                                <th>Address</th>
-                                <th>Visible</th>
-                                <th>Action</th>
+                                <th>Group Name</th>
+                                <th>Description</th>
+                                <th>Visibility</th>
                                 <th>subscriber</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- row 1 -->
-                            <tr>
-                                <td>
-                                    <div class="flex items-center space-x-3">
-                                        <div class="avatar">
-                                            <div class="mask mask-squircle w-12 h-12">
-                                                <img src="https://source.unsplash.com/random"
-                                                    alt="Avatar Tailwind CSS Component" />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="font-bold">Hart Hagerty</div>
-                                            <div class="text-sm opacity-50">United States</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    Zemlak, Daniel and Leannon
-                                    <br>
-                                    <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
-                                </td>
-                                <td>Published</td>
-                                <th>
-                                    <button class="btn btn-outline btn-accent">not publish</button>
-                                    <button class="btn btn-outline btn-accent">view</button>
-                                    <button class="btn btn-outline btn-warning">edit</button>
-                                    <button class="btn btn-outline btn-error">hapus</button>
-                                </th>
-                                <td>
-                                    <div class="avatar-group -space-x-6">
-                                        <div class="avatar">
-                                            <div class="w-12">
-                                                <img src="https://api.lorem.space/image/face?hash=4818" />
-                                            </div>
-                                        </div>
-                                        <div class="avatar">
-                                            <div class="w-12">
-                                                <img src="https://api.lorem.space/image/face?hash=40311" />
-                                            </div>
-                                        </div>
-                                        <div class="avatar">
-                                            <div class="w-12">
-                                                <img src="https://api.lorem.space/image/face?hash=84348" />
-                                            </div>
-                                        </div>
-                                        <div class="avatar placeholder">
-                                            <div class="w-12 bg-neutral-focus text-neutral-content">
-                                                <span>+99</span>
-                                            </div>
+                        <tbody></tbody>
+                        {% for row in iShowbank%}
+                        <tr>
+                            <td>
+                                <div class="flex items-center text-lg">
+                                    {{row[4]}}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-sm">{{row[5]}}</span>
+                            </td>
+                            <td> <span class="badge badge-ghost badge-sm">{{row[6]}}</span></td>
+                            <td>
+                                <div class="avatar-group -space-x-6">
+                                    <div class="avatar">
+                                        <div class="w-12">
+                                            <img src="https://api.lorem.space/image/face?hash=4818" />
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="flex items-center space-x-3">
-                                        <div class="avatar">
-                                            <div class="mask mask-squircle w-12 h-12">
-                                                <img src="https://source.unsplash.com/random"
-                                                    alt="Avatar Tailwind CSS Component" />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="font-bold">Hart Hagerty</div>
-                                            <div class="text-sm opacity-50">United States</div>
+                                    <div class="avatar">
+                                        <div class="w-12">
+                                            <img src="https://api.lorem.space/image/face?hash=40311" />
                                         </div>
                                     </div>
-                                </td>
-                                <td>
-                                    Zemlak, Daniel and Leannon
-                                    <br>
-                                    <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
-                                </td>
-                                <td>Not Published</td>
-                                <th>
-                                    <button class="btn btn-outline btn-accent">publish</button>
-                                    <button class="btn btn-outline btn-accent">view</button>
-                                    <button class="btn btn-outline btn-warning">edit</button>
-                                    <button class="btn btn-outline btn-error">hapus</button>
-                                </th>
-                                <td>
-                                    <div class="avatar-group -space-x-6">
-                                        <div class="avatar">
-                                            <div class="w-12">
-                                                <img src="https://api.lorem.space/image/face?hash=4818" />
-                                            </div>
-                                        </div>
-                                        <div class="avatar">
-                                            <div class="w-12">
-                                                <img src="https://api.lorem.space/image/face?hash=40311" />
-                                            </div>
-                                        </div>
-                                        <div class="avatar">
-                                            <div class="w-12">
-                                                <img src="https://api.lorem.space/image/face?hash=84348" />
-                                            </div>
-                                        </div>
-                                        <div class="avatar placeholder">
-                                            <div class="w-12 bg-neutral-focus text-neutral-content">
-                                                <span>+99</span>
-                                            </div>
+                                    <div class="avatar">
+                                        <div class="w-12">
+                                            <img src="https://api.lorem.space/image/face?hash=84348" />
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
+                                    <div class="avatar placeholder">
+                                        <div class="w-12 bg-neutral-focus text-neutral-content">
+                                            <span>+99</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <th>
+                                <button class="btn btn-outline btn-accent">not publish</button>
+                                <button class="btn btn-outline btn-accent">view</button>
+                                <button class="btn btn-outline btn-warning">edit</button>
+                                <button class="btn btn-outline btn-error">hapus</button>
+                            </th>
+                        </tr>
+                        {% endfor %}
                         </tbody>
-
                     </table>
+
+
+
                 </div>
             </div>
         </div>
