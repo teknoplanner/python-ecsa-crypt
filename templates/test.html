@@ -1,0 +1,124 @@
+<!doctype html class="dark">
+<html>
+
+<head>
+    {% include "header2.html" %}
+
+</head>
+
+<body class="dark:text-gray-200 dark:bg-gray-900">
+    <div class="flex flex-row flex-wrap flex-1 flex-grow content-start">
+        <div class="h-20 lg:h-20 w-full flex flex-wrap">
+            {% include "navbardash.html" %}
+        </div>
+        <!--Dash Content -->
+        <div id="dash-content"
+            class="py-6 lg:py-0 w-full lg:max-w-auto flex flex-wrap content-start dark:text-gray-200 dark:bg-gray-900 m-5">
+            <!-- component -->
+
+            <div class="p-8 rounded-md w-full shadow-xl bg-white dark:text-gray-200 dark:bg-gray-600">
+                <div class="flex items-center justify-between pb-6">
+                    <div>
+                        <h2 class="text-gray-600 font-semibold dark:text-gray-200">
+                            My Assets
+                        </h2>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <a data-widgster="expand" title="Add Source" href="{{url_for('additem')}}">
+                            <button
+                                class="mr-2 bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
+                                Add</button></a>
+                    </div>
+                </div>
+                <div>
+                    <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 ">
+                        <div class="inline-block shadow rounded-lg block w-full overflow-auto">
+                            <table class="table-auto w-full leading-normal overflow-auto">
+                                <thead>
+                                    <tr>
+                                        <th class=" px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs
+                                font-semibold text-gray-600 uppercase tracking-widerdark:text-gray-200
+                                dark:text-gray-200 dark:bg-gray-700 ">
+                                            Source
+                                        </th>
+                                        <th class=" px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs
+                                font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-200
+                                dark:bg-gray-700">
+                                            Description
+                                        </th>
+                                        <th
+                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-200 dark:bg-gray-700">
+                                            Password
+                                        </th>
+                                        <th
+                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-200 dark:bg-gray-700">
+                                            Keycode
+                                        </th>
+                                        <th
+                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-200 dark:bg-gray-700">
+                                            Access
+                                        </th>
+                                        <th
+                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-200 dark:bg-gray-700">
+                                            QR Code
+                                        </th>
+                                        <th
+                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider dark:text-gray-200 dark:bg-gray-700">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                {% for row in isItems %}
+                                <tbody>
+                                    <tr>
+                                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                            {{row[2]}}
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                            {{row[3]}}
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                            {{row[4]}}
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200  text-sm">
+                                            {{row[5]}}
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                            {{row[6]}}
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                            <a data-widgster="collapse" title="qrcode"
+                                                href="{{url_for('qrcode', id=row[0])}}"><i class="fa fa-qrcode"></i></a>
+                                        </td>
+                                        <td>
+                                            <a data-widgster="collapse"
+                                                onclick="return confirm('Are you sure you want to delete this item?');"
+                                                title="Delele" href="{{url_for('delete', id=row[0])}}"><button
+                                                    class="btn btn-outline btn-error">Delete</button></a>
+                                            <a data-widgster="collapse" title="edit"
+                                                href="{{url_for('edit', id=row[0])}}"><button
+                                                    class="btn btn-outline btn-warning">Edit</button></i></a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div
+                                class="w-full px-5 py-5 border-t flex flex-col xs:flex-row items-center xs:justify-between  dark:text-gray-200 dark:bg-gray-700 overflow-auto">
+                                <div class=" flex mt-2 xs:mt-0">
+                                    <button
+                                        class="text-sm text-indigo-50 transition duration-150 font-semibold py-2 px-4 rounded-l">
+                                        <span
+                                            class="inline-block align-middle items-center justify-content-center m-2"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

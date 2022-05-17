@@ -1,0 +1,49 @@
+<!doctype html class="dark">
+<html>
+
+<head>
+    {% include "header2.html" %}
+</head>
+
+<body class="min-h-screen dark:text-gray-200 dark:bg-gray-900">
+    <div class="w-full">
+        <div class="h-20 lg:h-20 w-full flex flex-wrap">
+            {% include "navbardash.html" %}
+        </div>
+        <div class="w-11/12 mx-2 my-5 lg:mx-20 lg:my-14">
+            <div class="flex flex-col lg:flex-row justify-center">
+                <div class="bg-base-200 shadow-2xl rounded-box p-2 lg:p-5 items-center">
+                    <div class="w-full">
+                        <form method="POST" action="/addgroup">
+                            <div class="bg-warning shadow-lg rounded mb-2 pl-2 pr-2 font-3xl"><span
+                                    class="font-3xl text-slate-300 italic leading-loose">{{msg}}
+                                </span></div>
+                            <div class="text-2xl font-bold my-2">Join Group Access</div>
+                            <div class="flex flex-col lg:flex-row space-x-0 lg:space-x-5 w-auto">
+                                <div class="mb-5 flex flex-col w-full lg:w-1/2">
+                                    <label for="owner"
+                                        class="block mb-2 mt-5 text-sm font-medium text-gray-600 dark:text-gray-200">Owner</label>
+                                    <input type="text" name="owner"
+                                        class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none dark:text-black"
+                                        required>
+                                </div>
+                                <div class="mb-5 flex flex-col w-full lg:w-1/2">
+                                    <label for="code"
+                                        class="block mb-2 mt-5 text-sm font-medium text-gray-600 dark:text-gray-200">Code</label>
+                                    <input type="text" name="code" minlength="6" placeholder="R4HAS1A"
+                                        class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none dark:text-black"
+                                        required>
+                                </div>
+                            </div>
+                            <button
+                                class="w-full p-3 mt-8 bg-indigo-600 text-white rounded shadow dark:text-gray-200 dark:bg-gray-900"
+                                type="submit">Join Group</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

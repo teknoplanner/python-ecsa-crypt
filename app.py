@@ -1,7 +1,9 @@
+from ast import Sub
 from ctypes import alignment
+from multiprocessing.sharedctypes import Value
 from os import abort
 from urllib import response
-from flask import Flask, render_template, request, redirect, url_for, make_response, send_file
+from flask import Flask, render_template, request, redirect, url_for, make_response, render_template_string
 from service import acak, getresult, angka, new_simbol, simbol, alphabet, gen_pass
 import secrets
 import random
@@ -105,7 +107,7 @@ def login():
             conn = mysql.connect()
             cursor = conn.cursor(pymysql.cursors.DictCursor)
             cursor.execute(
-                'SELECT username, password, email,uniqcode, hashcode, verification, activation FROM users WHERE username = %s AND password = %s', (username, encpass))
+                'SELECT username, password, email,uniqcode, hashcode, verification, activation, pic_url FROM users WHERE username = %s AND password = %s', (username, encpass))
             account = cursor.fetchone()
             if account and recaptcha.verify():
                 verifict = account.get('verification')
@@ -115,7 +117,7 @@ def login():
                     session['username'] = account['username']
                     session['hashcode'] = account['hashcode']
                     session['uniqcode'] = account['uniqcode']
-                    print(session['username'])
+                    session['pic_url'] = account['pic_url']
                     return redirect('/dashboard')
                 else:
                     sendmail = get_mail.split()
@@ -155,18 +157,11 @@ def dashboard():
         return redirect(url_for("login"))
     else:
         msg = ''
-        hashcode = session["hashcode"]
-        Getuser = session["username"]
         akses = 'public'
         cursor = mysql.connect().cursor()
         cursor.execute(
             'SELECT * FROM newitem WHERE access = %s', (akses))
         Getshowbank = cursor.fetchall()
-        conn = mysql.connect()
-        cursor = conn.cursor()
-        cursor.execute(
-            'SELECT pic_url FROM users WHERE username=%s', (Getuser))
-        data = str(cursor.fetchone()[0])
         cursor.close()
         if Getshowbank and 'search' in request.form:
             searchValue = request.form['search']
@@ -191,7 +186,7 @@ def dashboard():
                 'SELECT * FROM newitem WHERE access = %s ORDER BY created_time DESC LIMIT 10', (akses))
             showbank = cursor.fetchall()
             cursor.close()
-            return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"], image=data)
+            return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"])
 
 
 @app.route("/redeem", methods=["GET", "POST"])
@@ -302,8 +297,15 @@ def addgroup():
     if "username" not in session:
         return redirect(url_for("login"))
     else:
-        access = 'public'
         username = session['username']
+        cursor = mysql.connect().cursor()
+        cursor.execute(
+            'SELECT id FROM users WHERE username = %s', (username))
+        getId = cursor.fetchone()
+        cursor.execute(
+            'SELECT pic_url FROM users WHERE username=%s', (username))
+        data = str(cursor.fetchone()[0])
+        access = 'public'
         hashcode = hashlib.sha256(str(username).encode('utf-8'))
         hash_digit = hashcode.hexdigest()
         uniq = session['uniqcode']
@@ -330,14 +332,52 @@ def addgroup():
                 bShowbank.append(i[0])
             cursor.close()
             idAssets = ",".join(str(x) for x in bShowbank)
-            cursor = connection.cursor()
-            cursor.execute('INSERT INTO mygroup(owner,assets,code,source,description,action) VALUES (%s,%s,%s,%s,%s,%s)',
-                           (username, idAssets, code, source, description, action))
-            connection.commit()
-            connection.close()
-            msg = 'You have successfully add new Group !'
-            return render_template('addgroup.html', showdata=showdata, msg=msg)
-    return render_template('addgroup.html', showdata=showdata, msg=msg)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(
+                'SELECT code FROM mygroup WHERE code=%s', (code))
+            CheckCode = str(cursor.fetchone())
+            if code not in CheckCode:
+                created = datetime.now()
+                cursor = connection.cursor()
+                cursor.execute('INSERT INTO mygroup(owner,assets,code,source,description,action,subscriber,created) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)',
+                               (username, idAssets, code, source, description, action, getId, created))
+                connection.commit()
+                cursor.execute('UPDATE mygroup SET owner_pic=%s WHERE owner = %s AND code = %s',
+                               (data, username, code))
+                connection.commit()
+                msg = 'You have successfully add new Group !'
+                return render_template('addgroup.html', showdata=showdata, image=data, msg=msg)
+            else:
+                msg = 'Your Code Is Existing'
+                return render_template('addgroup.html', showdata=showdata, image=data, msg=msg)
+        else:
+            if request.method == 'POST' and 'owner' in request.form and 'code' in request.form:
+                code = request.form['code']
+                owner = request.form['owner']
+                cursor = mysql.connect().cursor()
+                cursor.execute(
+                    'SELECT * FROM mygroup WHERE owner=%s AND code=%s', (owner, code))
+                getGroup = cursor.fetchall()
+                if getGroup:
+                    seprator = ','
+                    conn = mysql.connect()
+                    cursor = conn.cursor()
+                    cursor.execute('UPDATE mygroup SET subscriber = CONCAT(subscriber, %s,%s) WHERE owner = %s AND code = %s',
+                                   (seprator, getId, owner, code))
+                    conn.commit()
+                    conn.close()
+                msg = 'Congratulation, You have a New group assets'
+                return render_template('joingroup.html', showdata=showdata, image=data, msg=msg)
+            return render_template('addgroup.html', showdata=showdata, image=data, msg=msg)
+
+
+@app.route('/joingroup', methods=['GET', 'POST'])
+def joingroup():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    else:
+        return render_template('joingroup.html')
 
 
 @app.route('/detail', methods=['GET', 'POST'])
@@ -348,7 +388,8 @@ def detail():
         if 'mypin' not in session:
             return redirect(url_for('show'))
         else:
-            page = request.args.get(get_page_parameter(), type=int, default=1)
+            page = request.args.get(get_page_parameter(),
+                                    type=int, default=1)
             limit = 10
             offset = page * limit - limit
             cursor = mysql.connect().cursor()
@@ -411,9 +452,6 @@ def edit(id):
             Getuser = session["username"]
             conn = mysql.connect()
             cursor = conn.cursor()
-            cursor.execute(
-                'SELECT pic_url FROM users WHERE username=%s', (Getuser))
-            data = str(cursor.fetchone()[0])
             cursor.close()
             if get_id and 'source' in request.form and 'deskripsi' in request.form and 'password' in request.form and 'access' in request.form and 'Private_key' in request.form:
                 source = request.form['source']
@@ -458,7 +496,7 @@ def edit(id):
                     cursor.close()
                 msg = 'data has been successfully update'
                 return render_template('edit.html', get_id=get_id, msg=msg)
-            return render_template('edit.html', get_id=get_id, msg=msg, image=data)
+            return render_template('edit.html', get_id=get_id, msg=msg)
 
 
 @app.route("/detail/<int:id>/qrcode", methods=['GET', 'POST'])
@@ -483,9 +521,6 @@ def qrcode(id):
             Getuser = session["username"]
             conn = mysql.connect()
             cursor = conn.cursor()
-            cursor.execute(
-                'SELECT pic_url FROM users WHERE username=%s', (Getuser))
-            data = str(cursor.fetchone()[0])
             cursor.close()
             if request.method == 'POST' and 'checkbox' in request.form:
                 checkbox = request.form['checkbox']
@@ -500,7 +535,7 @@ def qrcode(id):
                     response.headers["Content-Disposition"] = "inline; filename=qrcode.pdf"
                     return response
             else:
-                return render_template('detailsource.html', image=data,  qr=qr_generator, get_key=aksesKey, id=id)
+                return render_template('detailsource.html', qr=qr_generator, get_key=aksesKey, id=id)
             return render_template('detailsource.html', qr=qr_generator, get_key=aksesKey, id=id)
 
 
@@ -642,29 +677,86 @@ def group():
         return redirect(url_for("login"))
     else:
         Getuser = session["username"]
-        conn = mysql.connect()
-        cursor = conn.cursor()
-        cursor.execute(
-            'SELECT pic_url FROM users WHERE username=%s', (Getuser))
-        data = str(cursor.fetchone()[0])
+        cursor = mysql.connect().cursor()
         cursor.execute(
             'SELECT id FROM users WHERE username=%s', (Getuser))
-        rowdata = str(cursor.fetchone()[0])
-        defId = ',1'
-        rowid = rowdata + defId
-        isId = rowid.split(',')
-        cursor.close()
-        connection = mysql.get_db()
-        cursor = mysql.connect().cursor()
-        query = "SELECT * FROM  mygroup WHERE subscriber IN ('%s')" % "','".join(
-                isId)
-        cursor.execute(query)
+        isId = str(cursor.fetchone()[0])
+        cursor.execute(
+            'SELECT * FROM mygroup WHERE find_in_set(%s, subscriber)', (isId))
         iShowbank = cursor.fetchall()
-        connection.close()
-        return render_template('group.html', image=data, iShowbank=iShowbank)
+        return render_template('group.html', iShowbank=iShowbank)
 
 
-@app.route("/collab", methods=['GET', 'POST'])
+@app.route("/group/view/<int:id>", methods=['GET', 'POST'])
+def groupview(id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+    else:
+        username = session['username']
+        cursor = mysql.connect().cursor()
+        cursor.execute(
+            'SELECT * FROM mygroup WHERE id=%s', (id))
+        getValue = cursor.fetchall()
+        cursor.execute(
+            'SELECT owner FROM mygroup WHERE id=%s', (id))
+        getOwner = str(cursor.fetchone()[0])
+        if getValue:
+            cursor.execute(
+                'SELECT assets FROM mygroup WHERE id=%s', (id))
+            getAssets = cursor.fetchone()
+            cursor.execute(
+                'SELECT * FROM newitem WHERE id in (%s)' % ','.join(
+                    getAssets)
+            )
+            getItem = cursor.fetchall()
+            cursor.close()
+        return render_template('groupview.html', isItems=getItem, getOwner=getOwner)
+
+
+@app.route("/group/<int:id>/delete", methods=['GET', 'POST'])
+def groupdelete(id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+    else:
+        username = session['username']
+        cursor = mysql.connect().cursor()
+        cursor.execute(
+            'SELECT id FROM users WHERE username = %s', (username))
+        get_userId = cursor.fetchone()
+        cursor = mysql.connect().cursor()
+        cursor.execute(
+            'SELECT * FROM mygroup WHERE id = %s AND owner=%s', (id, username))
+        get_id = cursor.fetchall()
+        if get_id:
+            connection = mysql.get_db()
+            cursor = connection.cursor()
+            cursor.execute('DELETE FROM mygroup WHERE id = %s', (id))
+            connection.commit()
+            connection.close()
+            return redirect('/group')
+        else:
+            cursor.execute(
+                'SELECT subscriber FROM mygroup WHERE id = %s', (id))
+            subScriber = str(cursor.fetchone())
+            x = subScriber.replace('(', '')
+            x2 = x.replace(')', '')
+            x3 = x2.replace("'", '')
+            x4 = x3.replace(",,", '')
+            get_subscriber = str(get_userId)
+            y = get_subscriber.replace('(', '')
+            y2 = y.replace(')', '')
+            xy = x4.replace(y2, '')
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute('UPDATE mygroup SET subscriber = %s WHERE id= %s',
+                           (xy, id))
+            conn.commit()
+            conn.close()
+            cursor.close()
+            return redirect('/group')
+
+
+@ app.route("/collab", methods=['GET', 'POST'])
 def collab():
     if "username" not in session:
         return redirect(url_for("login"))
@@ -672,14 +764,11 @@ def collab():
         Getuser = session["username"]
         conn = mysql.connect()
         cursor = conn.cursor()
-        cursor.execute(
-            'SELECT pic_url FROM users WHERE username=%s', (Getuser))
-        data = str(cursor.fetchone()[0])
         cursor.close()
-        return render_template('collab.html', image=data)
+        return render_template('collab.html')
 
 
-@app.route("/register", methods=['GET', 'POST'])
+@ app.route("/register", methods=['GET', 'POST'])
 def register():
     msg = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
@@ -719,11 +808,12 @@ def register():
                 link = url_for('confirm_email', token=token, _external=True)
                 msg.body = "Please No Reply"
                 msg.body = "click link for activation:{}".format(link)
+                defaultImage = "/static/images/profile/0.png"
                 mail.send(msg)
                 connection = mysql.get_db()
                 cursor = connection.cursor()
                 cursor.execute(
-                    'INSERT INTO users(username,password, email,uniqcode, hashcode, activation) VALUES (%s, %s,%s,%s,%s, %s)', (username, encpass, email, uniqcode, uniq_hash, token))
+                    'INSERT INTO users(username,password, email,uniqcode, hashcode, activation,pic_url) VALUES (%s, %s,%s,%s,%s, %s, %s)', (username, encpass, email, uniqcode, uniq_hash, token, defaultImage))
                 connection.commit()
                 msg = 'Congraturation You have successfully registered, check your inbox/spam email for Activation Account'
                 connection.close()
@@ -918,7 +1008,7 @@ def restoreAccount(token):
     return render_template('recoverypass.html')
 
 
-@ app.route('/<uniqcode>')
+@app.route('/<uniqcode>')
 def uniqcode(uniqcode):
     conn = mysql.connect()
     cursor = conn.cursor()
