@@ -118,6 +118,7 @@ def login():
                     session['hashcode'] = account['hashcode']
                     session['uniqcode'] = account['uniqcode']
                     session['pic_url'] = account['pic_url']
+                    session['email'] = account['email']
                     return redirect('/dashboard')
                 else:
                     sendmail = get_mail.split()
@@ -677,14 +678,26 @@ def group():
         return redirect(url_for("login"))
     else:
         Getuser = session["username"]
+        page = request.args.get(get_page_parameter(),
+                                type=int, default=1)
+        limit = 2
+        offset = page * limit - limit
         cursor = mysql.connect().cursor()
         cursor.execute(
             'SELECT id FROM users WHERE username=%s', (Getuser))
         isId = str(cursor.fetchone()[0])
         cursor.execute(
-            'SELECT * FROM mygroup WHERE find_in_set(%s, subscriber)', (isId))
+            'SELECT * FROM mygroup')
+        iSbank = cursor.fetchall()
+        total = len(iSbank)
+        next = page+1
+        prev = page-1
+        cursor.execute(
+            'SELECT * FROM mygroup WHERE find_in_set(%s, subscriber) ORDER BY id DESC limit %s offset %s', (isId, limit, offset))
         iShowbank = cursor.fetchall()
-        return render_template('group.html', iShowbank=iShowbank)
+        pagination = Pagination(
+            page=page, per_page=limit, total=total)
+        return render_template('group.html', iShowbank=iShowbank, pagination=pagination, next=next, prev=prev)
 
 
 @app.route("/group/view/<int:id>", methods=['GET', 'POST'])
@@ -746,12 +759,12 @@ def groupdelete(id):
             y = get_subscriber.replace('(', '')
             y2 = y.replace(')', '')
             xy = x4.replace(y2, '')
+            finalValue = xy[:-1]
             conn = mysql.connect()
             cursor = conn.cursor()
             cursor.execute('UPDATE mygroup SET subscriber = %s WHERE id= %s',
-                           (xy, id))
+                           (finalValue, id))
             conn.commit()
-            conn.close()
             cursor.close()
             return redirect('/group')
 

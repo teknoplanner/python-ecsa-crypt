@@ -24,18 +24,19 @@
       </div>
       <div class="">
         <div class="px-7 mb-8">
-          <h2 class="text-3xl font-bold text-green-800 dark:text-gray-300 my-5">{{Getuser}}</h2>
-          <div class="col-lg-4 order-lg-1 text-center">
+          <h2 class="text-3xl font-bold text-green-800 dark:text-gray-300 ">{{Getuser}}</h2>
+          <p class="mb-5 text-gray-600">{{session['email']}}</p>
+          <div class="text-center">
             <form role="form" action="/profile" method="post" enctype=multipart/form-data>
               <label class="custom-file">
                 <input type="file" id="photo" name="photo" class="custom-file-input" required>
               </label>
               <button type="submit" class="btn btn-outline-success btn-sm">Change Profile</button>
             </form>
-            {%endblock%}
           </div>
         </div>
       </div>
+      {%endblock%}
       <div class="bg-gray-200">
         <div class="flex flex-row p-5 w-auto">
           <a href="{{ url_for('forgetpass') }}"><button class="btn btn-wide w-11/12">
