@@ -1,39 +1,15 @@
-from os import abort
-from flask import Flask, render_template, request, redirect, url_for, make_response
-import secrets
-import random
-from flaskext.mysql import MySQL
-import pymysql
-import hashlib
-from flask_recaptcha import ReCaptcha
-import re
-from datetime import timedelta, datetime
-from flask import session, app
-from flask_mail import Mail, Message
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired
-from flask_paranoid import Paranoid
-from flask_paginate import Pagination, get_page_parameter
-from flask_qrcode import QRcode
-from pymysql import cursors
-import os
-from flask_uploads import IMAGES, UploadSet, configure_uploads
-import pdfkit
-import numpy as np
-from service import alphabet, acak, angka
-
+from packages import *
 
 app = Flask(__name__)
-app.secret_key = "BisMilaahHanya4allAhY4n6TauAamiin!#"
 mysql = MySQL()
 mail = Mail(app)
 QRcode(app)
+app.secret_key = "BisMilaahHanya4allAhY4n6TauAamiin!#"
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = ''
 app.config['MYSQL_DATABASE_DB'] = 'ecsa'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-# site key - Google ReChapta
 app.config['RECAPTCHA_SITE_KEY'] = '6LeUK3cfAAAAAIpGwG2Wf0LZreY7-QbNgbhOonPe'
-# secret key -  Google ReChapta
 app.config['RECAPTCHA_SECRET_KEY'] = '6LeUK3cfAAAAACGn_UdvErhV82b8QO2IwMmN4yVh'
 mysql.init_app(app)
 recaptcha = ReCaptcha(app)
@@ -50,41 +26,7 @@ configure_uploads(app, photos)
 app.config['UPLOADED_PHOTOS_ALLOW'] = set(['png', 'jpg', 'jpeg'])
 mail = Mail(app)
 
-paranoid = Paranoid(app)
-paranoid.redirect_view = '/'
-
 s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-
-
-@app.before_request
-def make_session_permanent():
-    session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=60)
-
-
-@app.errorhandler(404)
-def not_found(e):
-    return render_template("404.html"), 404
-
-
-@app.errorhandler(500)
-def internal_error(e):
-    return render_template('500.html'), 500
-
-
-@paranoid.on_invalid_session
-def invalid_session():
-    render_template('401.html'), 401
-
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-
-@app.route('/test')
-def test():
-    return render_template('test.html')
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -677,27 +619,6 @@ def showmypin():
     return render_template('mypin.html', msg=msg)
 
 
-@app.route("/wordbank", methods=['GET', 'POST'])
-def wordbank():
-    msg = ''
-    if request.method == 'POST' and 'search' in request.form:
-        conn = mysql.connect()
-        cursor = conn.cursor()
-        cari = request.form['search']
-        cursor.execute(
-            'SELECT * FROM bank WHERE hashcode=%s', (cari))
-        datahash = cursor.fetchall()
-        if datahash:
-            return render_template('wordbank.html', datahash=datahash)
-        else:
-            akses = 'public'
-            cursor.execute(
-                'SELECT source, password FROM newitem WHERE keycode=%s AND access=%s', (cari, akses))
-            datahash2 = cursor.fetchall()
-            return render_template('wordbank.html', datahash2=datahash2)
-    return render_template('wordbank.html', msg=msg)
-
-
 @app.route("/collab", methods=['GET', 'POST'])
 def collab():
     if "username" not in session:
@@ -985,47 +906,6 @@ def email():
     return render_template('changeemail.html', msg=msg)
 
 
-@app.route('/deleteaccount',  methods=['GET', 'POST'])
-def deleteaccount():
-    msg = ''
-    if request.method == 'POST' and 'email' in request.form and 'username' in request.form and 'password' in request.form:
-        email = request.form['email']
-        username = request.form['username']
-        password = request.form['password']
-        conn = mysql.connect()
-        cursor = conn.cursor(pymysql.cursors.DictCursor)
-        cursor.execute(
-            'SELECT uniqcode FROM users WHERE username = %s', (username))
-        uniq = cursor.fetchone()
-        if uniq is not None:
-            uniqcode = uniq.get('uniqcode')
-            passkey = uniqcode.join(reversed(password)) + 'dd'
-            ruleppass = hashlib.sha256(str(passkey).encode('utf-8'))
-            encpass = ruleppass.hexdigest()
-            conn.close()
-            conn = mysql.connect()
-            cursor = conn.cursor(pymysql.cursors.DictCursor)
-            cursor.execute(
-                'SELECT hashcode FROM users WHERE username = %s AND password = %s AND email=%s', (username, encpass, email))
-            account = cursor.fetchone()
-            if account and recaptcha.verify():
-                conn = mysql.connect()
-                cursor = conn.cursor()
-                cursor.execute('DELETE users, newitem from users INNER JOIN newitem ON newitem.usercode = users.hashcode Where username',
-                               (account))
-                conn.commit()
-                conn.close()
-                msg = 'Your account has been successfully deleted'
-                return render_template('accountDelete.html', msg=msg)
-            else:
-                msg = "Account Not found"
-                return render_template('accountDelete.html', msg=msg)
-        else:
-            msg = "Not Valid"
-            return render_template('accountDelete.html', msg=msg)
-    return render_template('accountDelete.html', msg=msg)
-
-
 @app.route('/restoreaccount/<token>')
 def restoreAccount(token):
     try:
@@ -1056,6 +936,6 @@ def uniqcode(uniqcode):
         return render_template('404.html')
 
 
-if __name__ == "__main__":
-    app.debug = True
-    app.run(host='0.0.0.0', port=80)
+@app.route('/helper')
+def helper():
+    return render_template('helper.html')

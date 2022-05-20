@@ -13,11 +13,6 @@ def acak(X):
     return hasil
 
 
-def getresult(nilai):
-    result = [item for item in Wordbank if len(str(item)) == nilai]
-    return result
-
-
 def new_angka():
     new_angka = acak(angka)
     return new_angka
