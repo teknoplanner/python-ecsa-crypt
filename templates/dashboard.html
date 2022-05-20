@@ -6,12 +6,10 @@
 
 </head>
 
-<body class="h-full dark:text-gray-200 dark:bg-gray-900">
-    <div class="flex flex-row flex-wrap flex-1 flex-grow content-start">
+<body class="dark:text-gray-200 dark:bg-gray-900">
+    <div class="min-h-screen flex flex-row flex-wrap flex-1 flex-grow content-start">
         <div class="h-20 lg:h-20 w-full flex flex-wrap">
             {% include "navbardash.html"%}
-        </div>
-        <div>
         </div>
         <div id="dash-content"
             class="py-6 lg:py-0 w-full lg:max-w-sm flex flex-wrap bg-gray-100 content-start dark:text-gray-200 dark:bg-gray-900">
@@ -19,12 +17,12 @@
                 <div
                     class="border-2 border-white shadow-xl border-dashed hover:border-transparent hover:bg-white hover:shadow-xl rounded p-6 m-2 md:mx-10 md:my-6 dark:text-gray-200 dark:bg-gray-600">
                     <div class="flex flex-col items-center">
-                        <div class="flex-shrink pr-4">
-                            <div class="rounded-full p-3 bg-gray-300"><i
+                        <div class="flex-shrink mb-5">
+                            <div class="rounded-full p-3 bg-gray-300 text-center"><i
                                     class="fa fa-wifi fa-fw fa-inverse text-indigo-500"></i></div>
                         </div>
-                        <div class="flex-1">
-                            <h3 class="font-bold text-3xl">200 <span class="text-green-500"></h3>
+                        <div class="flex flex-col">
+                            <h3 class="font-bold text-3xl text-center">{{myAssets}} <span class="text-green-500"></h3>
                             <h5 class="font-bold text-gray-500">Your Assets</h5>
                         </div>
                     </div>
@@ -34,52 +32,22 @@
                 <div
                     class="border-2 border-white shadow-xl border-dashed hover:border-transparent hover:bg-white hover:shadow-xl rounded p-6 m-2 md:mx-10 md:my-6 dark:text-gray-200 dark:bg-gray-600">
                     <div class="flex flex-col items-center">
-                        <div class="flex-shrink pr-4">
-                            <div class="rounded-full p-3 bg-gray-300"><i
+                        <div class="flex-shrink  mb-5">
+                            <div class="rounded-full p-3 bg-gray-300 text-center"><i
                                     class="fas fa-users fa-fw fa-inverse text-indigo-500"></i></div>
                         </div>
-                        <div class="flex-1">
-                            <h3 class="font-bold text-3xl">100 <span class="text-orange-500"></h3>
-                            <h5 class="font-bold text-gray-500">Gruop</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="w-1/2 lg:w-full">
-                <div
-                    class="border-2 border-white shadow-xl border-dashed hover:border-transparent hover:bg-white hover:shadow-xl rounded p-6 m-2 md:mx-10 md:my-6 dark:text-gray-200 dark:bg-gray-600">
-                    <div class="flex flex-col items-center">
-                        <div class="flex-shrink pr-4">
-                            <div class="rounded-full p-3 bg-gray-300"><i
-                                    class="fa fa-paper-plane fa-fw fa-inverse text-indigo-500"></i></div>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="font-bold text-3xl">200 <span class="text-yellow-600"></span></h3>
-                            <h5 class="font-bold text-gray-500">Public Access</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="w-1/2 lg:w-full">
-                <div
-                    class="border-2 border-white shadow-xl border-dashed hover:border-transparent hover:bg-white hover:shadow-xl rounded p-6 m-2 md:mx-10 md:my-6 dark:text-gray-200 dark:bg-gray-600">
-                    <div class="flex flex-col items-center">
-                        <div class="flex-shrink pr-4">
-                            <div class="rounded-full p-3 bg-gray-300"><i
-                                    class="fas fa-server fa-fw fa-inverse text-indigo-500"></i></div>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="font-bold text-3xl"> 900</h3>
-                            <h5 class="font-bold text-gray-500">Private Access</h5>
+                        <div class="flex flex-col">
+                            <h3 class="font-bold text-3xl text-center ">{{mygroup}}</h3>
+                            <h5 class="font-bold text-gray-500t text-center ">Group</h5>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="main-content" class="w-full flex-1 bg-gray-100 dark:text-gray-200 dark:bg-gray-900">
+        <div id="main-content" class="min-h-screen flex-1 bg-gray-100 dark:text-gray-200 dark:bg-gray-900">
             <div class="flex flex-1 flex-wrap">
                 <div class="w-full xl:w-2/3 p-6 xl:max-w-6xl">
-                    <div class="alert shadow-lg bg-gray-100 mb-5 dark:text-gray-200 dark:bg-gray-600">
+                    <div class="alert shadow-lg bg-gray-100 mb-3 lg:mb-5 dark:text-gray-200 dark:bg-gray-600">
                         <div class="w-full w-max-auto">
                             <div class="relative w-full max-w-auto px-6">
                                 <div class="absolute h-10 mt-1 left-0 top-0 flex items-center pl-10">
@@ -94,77 +62,107 @@
                                     <input id="search" name="search" type="text" placeholder="Cari wifi publik di dunia"
                                         class="block w-full bg-gray-200 focus:outline-none focus:bg-white focus:shadow-md text-gray-700 font-bold rounded-full pl-12 pr-4 py-3">
                             </div>
-                            <button type="submit" class="btn mb-3" id="search" value="search"
+                            <button type="submit" class="btn mb-3 hidden md:block lg:block" id="search" value="search"
                                 name="search">find</button>
                             </form>
                         </div>
                     </div>
-                    {% for row in showbank %}
-                    <div class="card card-side bg-base-100 shadow-xl mb-5 dark:text-gray-200 dark:bg-gray-600">
-                        <figure><img src="https://api.lorem.space/image/movie?w=200&h=280" alt="Movie"></figure>
-                        <div class="card-body">
-                            <h2 class="card-title">{{row[2]}}</h2>
-                            <p>{{row[3]}}</p>
-                            <div class="card-actions justify-end">
-                                <button class="btn btn-primary">Watch</button>
+                    {% if msg %}
+                    <div
+                        class="items-center justify-center lg:px-24 lg:py-12 md:py-20 md:px-44 px-4 py-24 items-center flex justify-center flex-col-reverse lg:flex-row md:gap-28 gap-16">
+                        <div class="xl:pt-24 w-full xl:w-1/2 relative pb-12 lg:pb-0">
+                            <div class="relative">
+                                <div class="absolute">
+                                    <div class="">
+                                        <h1 class="my-2 text-gray-800 font-bold text-2xl">
+                                            {{msg}}
+                                        </h1>
+                                    </div>
+                                </div>
+                                <div>
+                                    <img src="{{url_for('static',filename = 'images/error/404.png')}}" />
+                                </div>
                             </div>
+                        </div>
+                        <div>
+                            <img src="{{url_for('static',filename = 'images/error/eroricon.png')}}" />
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% for row in showbank %}
+                    <div
+                        class="badge badge-ghost w-full lg:w-auto h-auto  bg-base-100 shadow-xl mb-5 dark:text-gray-200 dark:bg-gray-600 space-x-5 px-5">
+                        <div class="flex flex-col lg:flex-row space-x-6 p-2 ">
+                            <h5 class="font-bold text-gray-500">{{row[4]}}</h5>
+                        </div>
+                        <div class="avatar-group -space-x-6">
+                            <div class="avatar">
+                                <div class=" w-12">
+                                    <img src="{{row[8]}}">
+                                </div>
+                            </div>
+                            {%set image = row[2].split(',') %}
+                            <div class="avatar placeholder">
+                                <div class="w-12 bg-neutral-focus text-neutral-content flex flex-col ">
+                                    <span class="text-xs">{{image|length}}</span>
+                                    <span class="text-xs"> wifi</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <a data-widgster="collapse" title="edit" href="{{url_for('group', id=row[0])}}"><button
+                                    class="btn btn-xs">Show</button></a>
                         </div>
                     </div>
                     {% endfor %}
-                    <div class="btn-group grid grid-cols-2">
-                        <button class="btn btn-outline">Previous page</button>
-                        <button class="btn btn-outline">Next</button>
-                    </div>
                 </div>
-                <div class="w-full xl:w-1/3 p-6 xl:max-w-4xl border-l-1 dark:text-gray-200 dark:bg-gray-900">
+                <div class="w-full xl:w-1/3 p-6 xl:max-w-4xl dark:text-gray-200 dark:bg-gray-900">
                     <div class="max-w-sm lg:max-w-3xl xl:max-w-5xl">
                         <div class="mb-5">
                             <div class="stats shadow w-full mb-5">
                                 <div class="stat">
                                     <div class="stat-title">Total Wifi Public</div>
-                                    <div class="stat-value">89,400</div>
+                                    <div class="stat-value">{{totalPublish}}</div>
                                 </div>
                             </div>
-                            <table class="table w-full">
-                                <thead>
-                                    <tr>
-                                        <th class="text-3xl font-bold bg-base-100 dark:text-gray-200 dark:bg-gray-600">
-                                            Collection
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="bg-base-100 dark:text-gray-200 dark:bg-gray-600">Cy Ganderton
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-base-100 dark:text-gray-200 dark:bg-gray-600">Cy Ganderton
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
                         </div>
                         <div class="mb-5">
-                            <table class="table w-full">
-                                <thead>
-                                    <tr>
-                                        <th class="text-3xl bg-base-100 dark:text-gray-200 dark:bg-gray-600">
-                                            Populer
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="bg-base-100 dark:text-gray-200 dark:bg-gray-600">Cy Ganderton
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-base-100 dark:text-gray-200 dark:bg-gray-600">Cy Ganderton
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div
+                                class="p-4 w-full text-center bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+                                <h3 class="mb-2 text-3xl font-bold text-gray-900 dark:text-white">Access from
+                                    anywhere</h3>
+                                <p class="mb-5 text-base text-gray-500 sm:text-lg dark:text-gray-400">Stay up to date
+                                    (on going)
+                                </p>
+                                <div class="justify-center items-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
+                                    <a href="#info"
+                                        class="w-full sm:w-auto flex bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
+                                        <svg class="mr-3 w-7 h-7" aria-hidden="true" focusable="false" data-prefix="fab"
+                                            data-icon="google-play" role="img" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 512 512">
+                                            <path fill="currentColor"
+                                                d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z">
+                                            </path>
+                                        </svg>
+                                        <div class="text-left">
+                                            <div class="mb-1 text-xs">Get in on</div>
+                                            <div class="-mt-1 font-sans text-sm font-semibold">Google Play</div>
+                                        </div>
+                                    </a>
+                                    <div class="modal" id="info">
+                                        <div class="modal-box">
+                                            <h3 class="font-bold text-lg p-5">ON SPRINT</h3>
+                                            <ul class="steps">
+                                                <li class="step step-warning">API</li>
+                                                <li class="step">React Native</li>
+                                                <li class="step">Trial</li>
+                                                <li class="step">Publish</li>
+                                            </ul>
+                                            <a href="" class="btn btn-xs"> OK </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -172,8 +170,6 @@
         </div>
     </div>
     </div>
-    </div>
-    <section class="mb-20">
 </body>
 
 </html>

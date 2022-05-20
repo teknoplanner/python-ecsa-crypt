@@ -1,10 +1,5 @@
-from ast import Sub
-from ctypes import alignment
-from multiprocessing.sharedctypes import Value
 from os import abort
-from urllib import response
-from flask import Flask, render_template, request, redirect, url_for, make_response, render_template_string
-from service import acak, getresult, angka, new_simbol, simbol, alphabet, gen_pass
+from flask import Flask, render_template, request, redirect, url_for, make_response
 import secrets
 import random
 from flaskext.mysql import MySQL
@@ -24,6 +19,8 @@ import os
 from flask_uploads import IMAGES, UploadSet, configure_uploads
 import pdfkit
 import numpy as np
+from service import alphabet, acak, angka
+
 
 app = Flask(__name__)
 app.secret_key = "BisMilaahHanya4allAhY4n6TauAamiin!#"
@@ -83,6 +80,11 @@ def invalid_session():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -157,72 +159,84 @@ def dashboard():
     if "username" not in session:
         return redirect(url_for("login"))
     else:
+        public = 'public'
+        action = 'publish'
+        getHash = session['hashcode']
+        username = session['username']
         msg = ''
-        akses = 'public'
         cursor = mysql.connect().cursor()
         cursor.execute(
-            'SELECT * FROM newitem WHERE access = %s', (akses))
+            'SELECT COUNT(id) FROM newitem WHERE usercode=%s AND access=%s', (getHash, public))
+        publicWifi = str(cursor.fetchone()[0])
+        cursor.execute(
+            'SELECT COUNT(id) FROM newitem WHERE usercode=%s', (getHash))
+        myAssets = str(cursor.fetchone()[0])
+        cursor.execute(
+            'SELECT COUNT(id) FROM mygroup WHERE owner=%s', (username))
+        mygroup = str(cursor.fetchone()[0])
+        cursor.execute(
+            'SELECT COUNT(id) FROM mygroup WHERE action=%s ', (action))
+        totalPublish = str(cursor.fetchone()[0])
+        cursor.execute(
+            'SELECT * FROM mygroup')
         Getshowbank = cursor.fetchall()
         cursor.close()
         if Getshowbank and 'search' in request.form:
             searchValue = request.form['search']
+            find = "%" + searchValue + "%"
             cursor = mysql.connect().cursor()
             cursor.execute(
-                'SELECT * FROM newitem WHERE source LIKE %s AND access=%s', (searchValue, akses))
+                'SELECT * FROM mygroup WHERE source LIKE %s', (find))
             showbank = cursor.fetchall()
             cursor.close()
             if showbank:
                 return render_template("dashboard.html", showbank=showbank, name=session["username"])
             else:
-                msg = 'Not Found'
-                cursor = mysql.connect().cursor()
-                cursor.execute(
-                    'SELECT * FROM newitem WHERE access = %s ORDER BY created_time DESC LIMIT 10', (akses))
-                showbank = cursor.fetchall()
-                cursor.close()
-                return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"])
+                msg = 'Opps Data Not found'
+                return render_template("dashboard.html", msg=msg,  name=session["username"])
         else:
             cursor = mysql.connect().cursor()
             cursor.execute(
-                'SELECT * FROM newitem WHERE access = %s ORDER BY created_time DESC LIMIT 10', (akses))
+                'SELECT * FROM mygroup ORDER BY id DESC limit 10 ')
             showbank = cursor.fetchall()
-            cursor.close()
-            return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"])
+            return render_template("dashboard.html", msg=msg, showbank=showbank, name=session["username"], publicWifi=publicWifi, myAssets=myAssets, mygroup=mygroup, totalPublish=totalPublish)
 
 
 @app.route("/redeem", methods=["GET", "POST"])
 def redeem():
-    if "username" not in session:
-        return redirect(url_for("login"))
-    else:
-        msg = ''
-        hashcode = session["hashcode"]
-        Getuser = session["username"]
-        akses = 'public'
+    msg = ''
+    akses = 'public'
+    cursor = mysql.connect().cursor()
+    cursor.execute(
+        'SELECT access,source,password,deskripsi FROM newitem WHERE access = %s', (akses))
+    Getshowbank = cursor.fetchall()
+    if Getshowbank and 'search' in request.form:
+        searchValue = request.form['search']
         cursor = mysql.connect().cursor()
         cursor.execute(
-            'SELECT access,source,password,deskripsi FROM newitem WHERE access = %s', (akses))
-        Getshowbank = cursor.fetchall()
-        if Getshowbank and 'search' in request.form:
-            searchValue = request.form['search']
-            cursor = mysql.connect().cursor()
-            cursor.execute(
-                'SELECT access,source,password,deskripsi FROM newitem WHERE keycode LIKE %s AND access=%s', (searchValue, akses))
-            showbank = cursor.fetchall()
-            cursor.close()
-            if showbank:
-                fixed = 'http://192.168.2.7/'
-                aksesKey = fixed + searchValue
-                get_qr = str(aksesKey)
-                qr_generator = QRcode.qrcode(
-                    data=get_qr, error_correction='H', icon_img='static/images/publicWifi.jpg')
-                return render_template("redeem.html", showbank=showbank, qr=qr_generator, searchValue=searchValue, name=session["username"])
+            'SELECT access,source,password,deskripsi FROM newitem WHERE keycode LIKE %s AND access=%s', (searchValue, akses))
+        showbank = cursor.fetchall()
+        cursor.close()
+        if showbank:
+            fixed = 'http://192.168.2.7/'
+            aksesKey = fixed + searchValue
+            get_qr = str(aksesKey)
+            qr_generator = QRcode.qrcode(
+                data=get_qr, error_correction='H', icon_img='static/images/publicWifi.jpg')
+            if "username" not in session:
+                return render_template("openredeem.html", showbank=showbank, qr=qr_generator, searchValue=searchValue)
+            else:
+                return render_template("redeem.html", showbank=showbank, qr=qr_generator, searchValue=searchValue)
+        else:
+            if "username" not in session:
+                msg = 'Data Not Found'
+                return render_template("openredeem.html", msg=msg, showbank=showbank)
             else:
                 msg = 'Data Not Found'
-                return render_template("redeem.html", msg=msg, showbank=showbank, name=session["username"])
-        else:
-            msg = 'Data Not Found'
-            return render_template("redeem.html", msg=msg)
+                return render_template("openredeem.html", msg=msg, showbank=showbank)
+    else:
+        msg = 'Data Not Found'
+        return render_template("openredeem.html", msg=msg)
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -292,8 +306,8 @@ def additem():
     return render_template('additem.html', msg=msg)
 
 
-@app.route("/addgroup", methods=['GET', 'POST'])
-def addgroup():
+@app.route("/addcollab", methods=['GET', 'POST'])
+def addcollab():
     msg = ''
     if "username" not in session:
         return redirect(url_for("login"))
@@ -373,12 +387,24 @@ def addgroup():
             return render_template('addgroup.html', showdata=showdata, image=data, msg=msg)
 
 
-@app.route('/joingroup', methods=['GET', 'POST'])
-def joingroup():
+@app.route('/joingcollab', methods=['GET', 'POST'])
+def joincollab():
     if "username" not in session:
         return redirect(url_for("login"))
     else:
         return render_template('joingroup.html')
+
+
+@app.route("/group/<int:id>", methods=['GET', 'POST'])
+def group(id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+    else:
+        cursor = mysql.connect().cursor()
+        cursor.execute(
+            'SELECT * FROM mygroup WHERE id=%s', (id))
+        iShowbank = cursor.fetchall()
+        return render_template('getgroup.html', iShowbank=iShowbank)
 
 
 @app.route('/detail', methods=['GET', 'POST'])
@@ -631,7 +657,7 @@ def showmypin():
             cursor.execute(
                 'SELECT * FROM users WHERE username = %s AND password = %s', (username, encpass))
             get_id = cursor.fetchone()
-            if get_id and 'Private_key' in request.form and recaptcha.verify():
+            if get_id and 'Private_key' in request.form:
                 Private_key = request.form['Private_key']
                 conn = mysql.connect()
                 cursor = conn.cursor()
@@ -672,15 +698,15 @@ def wordbank():
     return render_template('wordbank.html', msg=msg)
 
 
-@app.route("/group", methods=['GET', 'POST'])
-def group():
+@app.route("/collab", methods=['GET', 'POST'])
+def collab():
     if "username" not in session:
         return redirect(url_for("login"))
     else:
         Getuser = session["username"]
         page = request.args.get(get_page_parameter(),
                                 type=int, default=1)
-        limit = 2
+        limit = 10
         offset = page * limit - limit
         cursor = mysql.connect().cursor()
         cursor.execute(
@@ -700,8 +726,8 @@ def group():
         return render_template('group.html', iShowbank=iShowbank, pagination=pagination, next=next, prev=prev)
 
 
-@app.route("/group/view/<int:id>", methods=['GET', 'POST'])
-def groupview(id):
+@app.route("/collab/view/<int:id>", methods=['GET', 'POST'])
+def collabview(id):
     if "username" not in session:
         return redirect(url_for("login"))
     else:
@@ -726,8 +752,8 @@ def groupview(id):
         return render_template('groupview.html', isItems=getItem, getOwner=getOwner)
 
 
-@app.route("/group/<int:id>/delete", methods=['GET', 'POST'])
-def groupdelete(id):
+@app.route("/collab/<int:id>/delete", methods=['GET', 'POST'])
+def collabdelete(id):
     if "username" not in session:
         return redirect(url_for("login"))
     else:
@@ -746,7 +772,7 @@ def groupdelete(id):
             cursor.execute('DELETE FROM mygroup WHERE id = %s', (id))
             connection.commit()
             connection.close()
-            return redirect('/group')
+            return redirect('/collab')
         else:
             cursor.execute(
                 'SELECT subscriber FROM mygroup WHERE id = %s', (id))
@@ -766,19 +792,7 @@ def groupdelete(id):
                            (finalValue, id))
             conn.commit()
             cursor.close()
-            return redirect('/group')
-
-
-@ app.route("/collab", methods=['GET', 'POST'])
-def collab():
-    if "username" not in session:
-        return redirect(url_for("login"))
-    else:
-        Getuser = session["username"]
-        conn = mysql.connect()
-        cursor = conn.cursor()
-        cursor.close()
-        return render_template('collab.html')
+            return redirect('/collab')
 
 
 @ app.route("/register", methods=['GET', 'POST'])
@@ -1028,91 +1042,18 @@ def uniqcode(uniqcode):
     akses = 'public'
     cursor.execute(
         'SELECT source, password FROM newitem WHERE access=%s and keycode=%s', (akses, uniqcode))
-    get_unik = cursor.fetchall()
-    if get_unik:
-        cursor.close()
-        return render_template('wordbanksearch.html',  get_uniq=get_unik)
+    showbank = cursor.fetchall()
+    if showbank:
+        aksesKey = uniqcode
+        get_qr = str(aksesKey)
+        qr_generator = QRcode.qrcode(
+            data=get_qr, error_correction='H', icon_img='static/images/publicWifi.jpg')
+        if "username" not in session:
+            return render_template("openredeem.html", showbank=showbank, qr=qr_generator, searchValue=uniqcode)
+        else:
+            return render_template("redeem.html", showbank=showbank, qr=qr_generator, searchValue=uniqcode)
     else:
         return render_template('404.html')
-
-
-@app.route("/smartpass")
-def smartpass():
-    # current_data
-    new_angka = new_angka
-    new_simbol = new_simbol
-    result1 = getresult(1)
-    result2 = getresult(2)
-    result3 = getresult(3)
-    result4 = getresult(4)
-    result5 = getresult(5)
-    result6 = getresult(6)
-    result7 = getresult(7)
-    new_wordbank = ''
-    new_result = ''
-
-    if len(new_wordbank) <= 2:
-        for char in range(0, 1):
-            new_result += random.choice(result1)
-            new_result += random.choice(result7)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 3:
-        for char in range(0, 1):
-            new_result += random.choice(result2)
-            new_result += random.choice(result6)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 4:
-        for char in range(0, 1):
-            new_result += random.choice(result3)
-            new_result += random.choice(result5)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 5:
-        for char in range(0, 1):
-            new_result += random.choice(result4)
-            new_result += random.choice(result4)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 6:
-        for char in range(0, 1):
-            new_result += random.choice(result5)
-            new_result += random.choice(result3)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 7:
-        for char in range(0, 1):
-            new_result += random.choice(result6)
-            new_result += random.choice(result2)
-            new_wordbank = new_result
-    elif len(new_wordbank) <= 8:
-        for char in range(0, 1):
-            new_result += random.choice(result7)
-            new_result += random.choice(result1)
-            new_wordbank = new_result
-    else:
-        for char in range(0, 1):
-            new_wordbank = new_result
-
-    wordlist = new_wordbank
-    while wordlist not in gen_pass.values:
-        password = wordlist
-        wordlist = password.join(secrets.choice(alphabet)
-                                 for password in range(2))
-        new_wordlist = wordlist.capitalize() + new_angka + new_simbol
-        break
-    securepass1 = wordlist[0].capitalize()
-    securepass2 = wordlist[-1].lower()
-    uniq = new_angka + new_simbol
-    remember = new_wordbank
-    generator = new_wordlist
-    tabur = 'dx2'
-    hashcode = hashlib.sha256(str(generator).encode('utf-8'))
-    hash_digit = hashcode.hexdigest()
-    uniq_hash = tabur + hash_digit
-    connection = mysql.get_db()
-    cursor = connection.cursor()
-    cursor.execute(
-        "INSERT INTO bank(password,hashcode) VALUES (%s,%s)", (generator, uniq_hash))
-    connection.commit()
-    connection.close()
-    return render_template('smartpass.html', data=generator, data2=remember, data3=uniq, data4=securepass1, data5=securepass2, uniq_hash=uniq_hash)
 
 
 if __name__ == "__main__":

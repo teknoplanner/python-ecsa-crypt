@@ -7,7 +7,7 @@
 
 <body class="min-h-screen dark:text-gray-200 dark:bg-gray-900">
   <div class="flex flex-wrap items-center justify-center dark:text-gray-200 dark:bg-gray-900">
-    <div class="container max-w-lg dark:text-gray-200 dark:bg-gray-900">
+    <div class="container w-full lg:w-1/2 dark:text-gray-200 dark:bg-gray-900 ">
       <div
         class="absolute top-50-10 -right-0 w-80 h-72 bg-indigo-300 rounded-xl mix-blend-multiply filter blur-xl opacity-70 animate-blob dark:bg-gray-900">
       </div>
@@ -20,45 +20,57 @@
       <div
         class="absolute bottom-20 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000 ">
       </div>
-      <!--Main-->
-      <div class="relative container mx-auto p-8 flex mb-5 dark:text-gray-200 dark:bg-gray-900">
-        <div class="max-w-md w-full mx-auto dark:text-gray-200 dark:bg-gray-900">
-          <h1 class="text-4xl text-center mb-12 font-thin">Get Started</h1>
-          <div class="rounded-lg overflow-hidden shadow-2xl dark:text-gray-200 dark:bg-gray-600">
-            <div class="p-8">
-              {%block content%}
-              <form method="POST" action="/login">
-                <div class="bg-warning shadow-lg rounded mb-2 pl-2 pr-2 font-3xl"><span
-                    class="font-3xl text-slate-300 italic leading-loose">{{msg}}
-                  </span></div>
-                <div class=" mb-5">
-                  <label for="email"
-                    class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">Username</label>
-                  <input type="text" name="username"
-                    class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none dark:text-black "
-                    required>
-                </div>
-                <div class="mb-5">
-                  <label for="password"
-                    class="block mb-2 text-sm font-medium text-gray-600 dark:bg-grey-600 dark:text-gray-200 ">Password</label>
-                  <input type="password" name="password"
-                    class="block w-full p-3 rounded bg-gray-200 border border-transparent focus:outline-none dark:text-black"
-                    required>
-                </div>
-                <div class="mb-5">
-                  {{ recaptcha }}
-                </div>
-                <button
-                  class="w-full p-3 mt-4 bg-indigo-600 text-white rounded shadow dark:text-gray-200 dark:bg-gray-900"
-                  type="submit">Login</button>
-              </form>
-              {%endblock%}
+      <div class="relative container mx-auto p-8 flex mb-5 dark:text-gray-200 dark:bg-gray-900 mt-12">
+        <div class="flex bg-white rounded-lg shadow-lg overflow-hidden w-full">
+          <div class="hidden lg:block lg:w-full bg-cover"
+            style="background-image:url('https://source.unsplash.com/random/?tech')">
+          </div>
+          <div class="w-full p-8 ">
+            {%if msg%}
+            <div class="alert alert-warning shadow-lg mb-5">
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>{{msg}}</span>
+              </div>
             </div>
-            <div
-              class="flex justify-between p-8 text-sm border-t border-gray-300 bg-gray-100 dark:text-gray-200 dark:bg-gray-600">
-              <a href="{{ url_for('register') }}" class="font-medium text-indigo-500 dark:text-gray-200">Create
+            {%endif%}
+            <h2 class="text-2xl font-semibold text-gray-700 text-center">Public Wifi</h2>
+            <p class="text-xl text-gray-600 text-center">Easy Connect and Secure Access</p>
+            {%block content%}
+            <form method="POST" action="/login">
+              <div class="mt-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+                <input
+                  class="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  type="username" name="username" required>
+              </div>
+              <div class="mt-4">
+                <div class="flex justify-between">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                  <a href="{{ url_for('forgetpass') }}" class="text-xs text-gray-500">Forget Password?</a>
+                </div>
+                <input
+                  class="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  type="password" name="password" required>
+              </div>
+              <div class="mt-5">
+                {{ recaptcha }}
+              </div>
+              <div class="mt-8">
+                <button class="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
+                  type="submit">Login</button>
+              </div>
+            </form>
+            {%endblock%}
+            <div class="mt-4 flex items-center justify-between">
+              <span class="border-b w-1/5 md:w-1/4"></span>
+              <a href="{{ url_for('register') }}" class="font-mediumtext-gray-500 dark:text-gray-200">Create
                 account</a>
-              <a href="{{ url_for('forgetpass') }}" class="text-indigo-500 dark:text-gray-200">Forgot password?</a>
+              <span class="border-b w-1/5 md:w-1/4"></span>
             </div>
           </div>
         </div>

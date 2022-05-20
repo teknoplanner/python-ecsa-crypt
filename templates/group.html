@@ -13,14 +13,14 @@
         </div>
         <div
             class="py-6 lg:py-0 w-full lg:max-w-auto flex flex-wrap content-start dark:text-gray-200 dark:bg-gray-900 m-2 lg:m-20">
-            <div class="p-16 rounded-md w-full shadow-xl bg-white dark:text-gray-200 dark:bg-gray-600">
+            <div class="p-1 lg:p-5 rounded-md w-full shadow-xl bg-white dark:text-gray-200 dark:bg-gray-600">
                 <div class="overflow-x-auto w-full items-center justify-center">
                     <button
                         class="mb-5 bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
-                        <a href="{{url_for('addgroup')}}"> Add Group</button></a>
+                        <a href="{{url_for('addcollab')}}"> Add Group</button></a>
                     <button
                         class="mb-5 bg-info px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
-                        <a href="{{url_for('joingroup')}}"> Join Group </button></a>
+                        <a href="{{url_for('joincollab')}}"> Join Collaboration </button></a>
                     <table class="mt-5 p-5 table w-full">
                         <!-- head -->
                         <thead>
@@ -31,7 +31,7 @@
                                 <th>Subscriber</th>
                                 <th>owner</th>
                                 <th>Action</th>
-                                {{getId}}
+
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -84,11 +84,11 @@
                                 </div>
                             </td>
                             <th>
-                                <a href=" {{url_for('groupview', id=row[0])}}"><button
+                                <a href=" {{url_for('collabview', id=row[0])}}"><button
                                         class="btn btn-outline btn-accent">Show Assets</button></a>
                                 <a data-widgster="collapse"
                                     onclick="return confirm('Are you sure you want to delete this item?');"
-                                    title="Delele" href="{{url_for('groupdelete', id=row[0])}}"><button
+                                    title="Delele" href="{{url_for('collabdelete', id=row[0])}}"><button
                                         class="btn btn-outline btn-error">Delete</button></a>
                             </th>
                         </tr>

@@ -10,8 +10,9 @@
   <div class="h-20 lg:h-20 w-full flex flex-wrap">
     {% include "navbardash.html" %}
   </div>
+
   {%block content%}
-  <div class="min-h-screen bg-indigo-300 dark:bg-gray-900 flex flex-wrap items-center justify-center">
+  <div class="flex items-center justify-center min-h-screen bg-gray-900">
     <div class="container max-w-lg bg-white rounded dark:bg-gray-800 shadow-lg transform duration-200 easy-in-out m-12">
       <div class="h-2/4 sm:h-64 overflow-hidden">
         <img class="w-full rounded-t" src="https://source.unsplash.com/random/?city"
@@ -38,16 +39,17 @@
       </div>
       {%endblock%}
       <div class="bg-gray-200">
-        <div class="flex flex-row p-5 w-auto">
-          <a href="{{ url_for('forgetpass') }}"><button class="btn btn-wide w-11/12">
+        <div class="flex p-5 lg:space-x-40">
+          <a href="{{ url_for('forgetpass') }}"><button class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg mx-5">
               <p class="text-xs">Change Password</p>
             </button></a>
-          <a href="{{ url_for('email') }}"><button class="btn btn-wide w-11/12">
+          <a href="{{ url_for('email') }}"><button class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg mx-5">
               <p class="text-xs">Change Email</p>
-            </button></a>
         </div>
+        </button></a>
       </div>
     </div>
+  </div>
   </div>
   </div>
   </div>

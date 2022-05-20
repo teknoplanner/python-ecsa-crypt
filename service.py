@@ -3,17 +3,9 @@ import string
 import random
 import secrets
 
-
-df = pd.read_csv(r'wordlist/AWordBank.csv')
-Wordbank = df['wordbank']
 alphabet = string.ascii_letters + string.digits
 angka = string.digits
 simbol = ['!', '*', '$', '#', '?']
-
-
-PassBank = pd.read_csv('rockyou/pass_bank.csv')
-New_PassBank = PassBank['PassBank']
-gen_pass = New_PassBank
 
 
 def acak(X):

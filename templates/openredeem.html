@@ -1,0 +1,79 @@
+<!doctype html class="dark">
+<html>
+
+<head>
+    {% include "freshHeader.html" %}
+
+</head>
+
+<body class="min-h-screen dark:text-gray-200 dark:bg-gray-900">
+    <div class="w-full">
+        <div class="h-20 lg:h-20 w-full flex flex-wrap">
+            {% include "navbardepan.html" %}
+        </div>
+        <div class="w-auto mx-5 my-5 lg:mx-20 lg:my-14">
+            <div class="flex flex-col lg:flex-row justify-center lg:space-x-12">
+                {% if msg %}
+                <div
+                    class="items-center justify-center lg:px-24 lg:py-24 md:py-20 md:px-44 px-4 py-24 items-center flex justify-center flex-col-reverse lg:flex-row md:gap-28 gap-16">
+                    <div class="xl:pt-24 w-full xl:w-1/2 relative pb-12 lg:pb-0">
+                        <div class="relative">
+                            <div class="absolute">
+                                <div class="">
+                                    <h1 class="my-2 text-gray-800 font-bold text-2xl">
+                                        {{msg}}
+                                    </h1>
+                                    <p class="my-2 text-gray-800">Sorry data does not match any asset or not found!,
+                                        Please check your valid data
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <img src="{{url_for('static',filename = 'images/error/404.png')}}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="{{url_for('static',filename = 'images/error/eroricon.png')}}" />
+                    </div>
+                </div>
+                {% endif %}
+                {% for row in showbank %}
+                <div class="bg-base-200 shadow-2xl rounded-box p-2 lg:p-5 items-center">
+                    <img src="{{qr}}" width="100%">
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex flex-row mb-5">
+                        <div class="hidden lg:alert lg:alert-success lg:shadow-lg">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div class="text-clip">
+                                    {{searchValue}} </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mockup-code">
+                        <pre data-prefix="$"><code>get keycode</code></pre>
+                        <pre data-prefix="$"><code>{{searchValue}}</code></pre>
+                        <pre data-prefix=">" class="text-warning"><code>redeem ..</code></pre>
+                        <pre data-prefix=">" class="text-success"><code>show data</code></pre>
+                        <pre data-prefix="#"
+                            class="bg-warning text-warning-content"><code>access = {{row[0]}}</code></pre>
+                        <pre data-prefix="#"
+                            class="bg-warning text-warning-content"><code>description = {{row[3]}}</code></pre>
+                        <pre data-prefix="#"
+                            class="bg-success text-warning-content"><code>SSID =  {{row[1]}}</code></pre>
+                        <pre data-prefix="#"
+                            class="bg-success text-warning-content"><code>password = {{row[2]}}</code></pre>
+                        <pre data-prefix="$" class="text-success"><code>Done!</code></pre>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+<!doctype html class="dark">
+<html>
+
+<head>
+    {% include "header2.html" %}
+
+</head>
+
+<body class="dark:text-gray-200 dark:bg-gray-900">
+    <div class="flex flex-row flex-wrap flex-1 flex-grow content-start">
+        <div class="h-20 lg:h-20 w-full flex flex-wrap">
+            {% include "navbardash.html" %}
+        </div>
+        <div
+            class="py-6 lg:py-0 w-full lg:max-w-auto flex flex-wrap content-start dark:text-gray-200 dark:bg-gray-900 m-2 lg:m-20">
+            <div class="p-16 rounded-md w-full shadow-xl bg-white dark:text-gray-200 dark:bg-gray-600">
+                <div class="overflow-x-auto w-full items-center justify-center">
+                    <table class="mt-5 p-5 table w-full">
+                        <thead>
+                            <tr>
+                                <th>Group Name</th>
+                                <th>Description</th>
+                                <th>Redem Code</th>
+                                <th>Subscriber</th>
+                                <th>owner</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        {% for row in iShowbank%}
+                        <tr>
+                            <td>
+                                <div class="flex flex-row badge badge-accent badge-outline space-x-2 p-5">
+                                    <div>
+                                        <svg width="21" height="20" viewBox="0 0 21 20" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M7.95605 10L9.95605 12L13.9561 8M19.9561 10C19.9561 14.9706 15.9266 19 10.9561 19C5.98549 19 1.95605 14.9706 1.95605 10C1.95605 5.02944 5.98549 1 10.9561 1C15.9266 1 19.9561 5.02944 19.9561 10Z"
+                                                stroke="#009485" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    <div>{{row[4]}}</div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-sm">{{row[5]}}</span>
+                            </td>
+                            <td> <span class="badge badge-ghost badge-md font-bold">{{row[3]}}</span></td>
+                            <td>
+                                <div class="avatar-group -space-x-6">
+                                    {%set image = row[7].split(',') %}
+                                    {% for getImages in image[0:4]|reverse %}
+                                    {%set path = '/static/images/profile/' %}
+                                    {%set ext = '.png' %}
+                                    {%set images = path + getImages + ext %}
+                                    <div class="avatar">
+                                        <div class="w-12">
+                                            <img src="{{images}}">
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    {%set image = row[7].split(',') %}
+                                    <div class="avatar placeholder">
+                                        <div class="w-12 bg-neutral-focus text-neutral-content">
+                                            <span>{{image|length}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex flex-col">
+                                    <div class="avatar">
+                                        <div class="w-12 rounded-full">
+                                            <img src="{{row[8]}}" />
+                                        </div>
+                                    </div>
+                                    {{row[1]}}
+                                </div>
+                            </td>
+                            <th>
+                                <a href=" {{url_for('collabview', id=row[0])}}"><button
+                                        class="btn btn-outline btn-accent">Show Assets</button></a>
+                            </th>
+                        </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
