@@ -1,8 +1,8 @@
 {
    "name": "python-ecsa-crypt",
-   "version": "1.0.0",
+   "version": "1.1.0",
    "description": "easy connect and secure access",
-   "main": "index.js",
+   "main": "wsgi.py",
    "scripts": {
       "dev": "cross-env TAILWIND_MODE=watch NODE_ENV=development postcss ./static/src/css/tailwind.css -o ./static/css/main.css -w",
       "build:prod": "cross-env TAILWIND_MODE=build NODE_ENV=production postcss ./static/src/css/tailwind.css -o ./static/css/main.css"
@@ -13,10 +13,12 @@
    },
    "keywords": [
       "python",
-      "flask"
+      "flask",
+      "nodejs",
+      "tailwind"
    ],
-   "author": "dede sudirman",
-   "license": "ISC",
+   "author": "Dede sudirman",
+   "license": "MIT",
    "bugs": {
       "url": "https://github.com/teknoplanner/python-ecsa-crypt/issues"
    },

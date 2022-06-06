@@ -14,29 +14,30 @@
         <div
             class="py-6 lg:py-0 w-full lg:max-w-auto flex flex-wrap content-start dark:text-gray-200 dark:bg-gray-900 m-2 lg:m-20">
             <div class="p-1 lg:p-5 rounded-md w-full shadow-xl bg-white dark:text-gray-200 dark:bg-gray-600">
-                <div class="overflow-x-auto w-full items-center justify-center">
+                <div class="overflow-x-auto w-full items-center justify-center dark:text-gray-200 dark:bg-gray-600">
                     <button
-                        class="mb-5 bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
+                        class="mb-5 bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer dark:bg-gray-900">
                         <a href="{{url_for('addcollab')}}"> Add Group</button></a>
                     <button
-                        class="mb-5 bg-info px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
+                        class="mb-5 bg-info px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer dark:bg-gray-900">
                         <a href="{{url_for('joincollab')}}"> Join Collaboration </button></a>
-                    <table class="mt-5 p-5 table w-full">
+                    <table class="mt-5 p-5 table w-full dark:bg-gray-900">
                         <thead>
                             <tr>
-                                <th>Group Name</th>
-                                <th>Description</th>
-                                <th>Visibility</th>
-                                <th>Subscriber</th>
-                                <th>owner</th>
-                                <th>Action</th>
+                                <th class="dark:bg-gray-900">Group Name</th>
+                                <th class="dark:bg-gray-900">Description</th>
+                                <th class="dark:bg-gray-900">Group Code</th>
+                                <th class="dark:bg-gray-900">Visibility</th>
+                                <th class="dark:bg-gray-900">Subscriber</th>
+                                <th class="dark:bg-gray-900">owner</th>
+                                <th class="dark:bg-gray-900">Action</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                         {% for row in iShowbank%}
                         <tr>
-                            <td>
-                                <div class="flex flex-row badge badge-accent badge-outline space-x-2 p-5">
+                            <td class="dark:bg-gray-400">
+                                <div class="flex flex-row badge badge-accent badge-outline space-x-2 p-5 dark:badge">
                                     <div>
                                         <svg width="21" height="20" viewBox="0 0 21 20" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -49,11 +50,15 @@
                                     <div>{{row[4]}}</div>
                                 </div>
                             </td>
-                            <td>
+                            <td class="dark:bg-gray-400">
                                 <span class="text-sm">{{row[5]}}</span>
                             </td>
-                            <td> <span class="badge badge-ghost badge-sm">{{row[6]}}</span></td>
-                            <td>
+                            <td class="dark:bg-gray-400">
+                                {{row[3]}}
+                            </td>
+                            <td class="dark:bg-gray-400"> <span class="badge badge-ghost badge-sm">{{row[6]}}</span>
+                            </td>
+                            <td class="dark:bg-gray-400">
                                 <div class="avatar-group -space-x-6">
                                     {%set image = row[7].split(',') %}
                                     {% for getImages in image[0:4]|reverse %}
@@ -74,14 +79,14 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>
+                            <td class="dark:bg-gray-400">
                                 <div class="avatar">
                                     <div class="w-12 rounded-full">
                                         <img src="{{row[8]}}" />
                                     </div>
                                 </div>
                             </td>
-                            <th>
+                            <th class="dark:bg-gray-400">
                                 <a href=" {{url_for('collabview', id=row[0])}}"><button
                                         class="btn btn-outline btn-accent">Show Assets</button></a>
                                 <a data-widgster="collapse"

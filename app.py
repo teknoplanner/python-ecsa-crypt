@@ -1,4 +1,7 @@
+from audioop import reverse
+from secrets import choice
 from packages import *
+from service import new_angka
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -230,11 +233,12 @@ def additem():
             hashcoder = session["hashcode"]
             source = request.form['source']
             deskripsi = request.form['deskripsi']
-            password = request.form['password']
+            password = request.form['password'] + 'dd' + \
+                str(random.choice(charuniq) + random.choice(angka))
             access = request.form['access']
             Private_key = request.form['Private_key']
             waktu = datetime.now()
-            hashcode = hashlib.sha256(str(password).encode('utf-8'))
+            hashcode = hashlib.sha256(str(reversed(password)).encode('utf-8'))
             hash_digit = hashcode.hexdigest()
             keycode = charuniq + hash_digit
             connection = mysql.get_db()
@@ -329,7 +333,7 @@ def addcollab():
             return render_template('addgroup.html', showdata=showdata, image=data, msg=msg)
 
 
-@app.route('/joingcollab', methods=['GET', 'POST'])
+@app.route('/joincollab', methods=['GET', 'POST'])
 def joincollab():
     if "username" not in session:
         return redirect(url_for("login"))

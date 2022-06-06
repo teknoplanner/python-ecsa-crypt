@@ -23,16 +23,16 @@
                     <div class="flex items-center justify-center">
                         <a data-widgster="expand" title="Add Source" href="{{url_for('additem')}}">
                             <button
-                                class="mr-2 bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
+                                class="mr-2 bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer dark:bg-gray-900">
                                 Add</button></a>
                     </div>
                 </div>
                 <div>
                     <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 ">
                         <div class="inline-block shadow rounded-lg block w-full overflow-auto">
-                            <table class="table-auto w-full">
+                            <table class="table-auto w-full dark:bg-gray-600 dark:text-gray-200">
                                 <thead>
-                                    <tr class="bg-primary text-center">
+                                    <tr class="bg-primary text-center dark:bg-gray-900 dark:text-gray-200">
                                         <th class="
                                          w-1/6
                                          min-w-[160px]
@@ -111,7 +111,7 @@
                                          lg:px-4
                                          border-r border-transparent
                                          ">
-                                            ACCSESS
+                                            MYPIN
                                         </th>
                                         <th class="
                                          w-1/6
@@ -153,6 +153,7 @@
                                          px-2
                                          bg-[#F3F6FF]
                                          border-b border-l border-[#E8E8E8]
+                                         dark:bg-gray-600 dark:text-gray-200
                                          ">
                                             {{row[2]}}
                                         </td>
@@ -164,6 +165,7 @@
                                          px-2
                                          bg-white
                                          border-b border-[#E8E8E8]
+                                         dark:bg-gray-600 dark:text-gray-200
                                          ">
                                             {{row[3]}}
                                         </td>
@@ -175,6 +177,7 @@
                                          px-2
                                          bg-[#F3F6FF]
                                          border-b border-[#E8E8E8]
+                                         dark:bg-gray-600 dark:text-gray-200
                                          ">
                                             {{row[4]}}
                                         </td>
@@ -186,6 +189,7 @@
                                          px-2
                                          bg-white
                                          border-b border-[#E8E8E8]
+                                         dark:bg-gray-600 dark:text-gray-200
                                          ">
                                             {{row[5]}}
                                         </td>
@@ -197,6 +201,7 @@
                                          px-2
                                          bg-[#F3F6FF]
                                          border-b border-[#E8E8E8]
+                                         dark:bg-gray-600 dark:text-gray-200
                                          ">
                                             {{row[6]}}
                                         </td>
@@ -208,6 +213,7 @@
                                         px-2
                                         bg-white
                                         border-b border-[#E8E8E8]
+                                        dark:bg-gray-600 dark:text-gray-200
                                          ">
                                             {{row[7]}}
                                         </td>
@@ -219,6 +225,7 @@
                                         px-2
                                         bg-[#F3F6FF]
                                         border-b border-[#E8E8E8]
+                                        dark:bg-gray-600 dark:text-gray-200
                                          ">
                                             <a data-widgster="collapse" title="qrcode"
                                                 href="{{url_for('qrcode', id=row[0])}}"><i class="fa fa-qrcode"></i></a>
@@ -231,6 +238,7 @@
                                          px-2
                                          bg-white
                                          border-b border-r border-[#E8E8E8]
+                                         dark:bg-gray-600 dark:text-gray-200
                                          ">
                                             <div class="flex flex-row space-x-2 mx-2">
                                                 <a data-widgster="collapse"

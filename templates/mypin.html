@@ -5,17 +5,17 @@
   {% include "Header.html" %}
 </head>
 
-<body>
+<body class="dark:bg-gray-900 min-h-screen">
   {%block content%}
   <div class="w-11/12 mx-4 my-5 lg:mx-20 lg:my-14">
     <div class="flex flex-col lg:flex-row justify-center">
-      <div class="bg-base-200 shadow-2xl rounded-box p-2 lg:p-5 items-center">
+      <div class="bg-base-200 shadow-2xl rounded-box p-2 lg:p-5 items-center dark:bg-gray-600">
         <div class="m-5 flex flex-col">
           <form method="POST" action="/showmypin">
             <div class="bg-warning shadow-lg rounded mb-2 pl-2 pr-2 font-3xl"><span
                 class="font-3xl text-slate-300 italic leading-loose">{{msg}}
               </span></div>
-            <div class="text-2xl font-bold my-2">Create Your Pin</div>
+            <div class="text-2xl font-bold my-2 dark:text-white">Create Your Pin</div>
             <div class="flex flex-col lg:flex-row space-x-0 lg:space-x-5 w-auto">
               <div class="mb-5 flex flex-col w-full lg:w-1/2">
                 <label for="source"
