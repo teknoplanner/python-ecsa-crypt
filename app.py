@@ -12,14 +12,14 @@ app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = ''
 app.config['MYSQL_DATABASE_DB'] = 'ecsa'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-app.config['RECAPTCHA_SITE_KEY'] = '6LeUK3cfAAAAAIpGwG2Wf0LZreY7-QbNgbhOonPe'
-app.config['RECAPTCHA_SECRET_KEY'] = '6LeUK3cfAAAAACGn_UdvErhV82b8QO2IwMmN4yVh'
+app.config['RECAPTCHA_SITE_KEY'] = 'Key'
+app.config['RECAPTCHA_SECRET_KEY'] = 'Key'
 mysql.init_app(app)
 recaptcha = ReCaptcha(app)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'ecsaproject@gmail.com'
-app.config['MAIL_PASSWORD'] = 'hryriwvwmkopeqkc'
+app.config['MAIL_PASSWORD'] = 'Password'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['CRSF_ENABLE'] = True
